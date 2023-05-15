@@ -1,8 +1,9 @@
-1635. Hopper Company Queries I
-# https://leetcode.com/problems/hopper-company-queries-i/
+# Problem
+https://leetcode.com/problems/hopper-company-queries-i/
 
-# Write your MySQL query statement below
+# Solution
 
+```sql
 #get months with recursive cte
 WITH RECURSIVE list_months AS (
     SELECT 1 as m 
@@ -38,3 +39,4 @@ SELECT DISTINCT
 FROM list_months lm
 LEFT JOIN active_drivers ad ON ad.month = lm.m
 LEFT JOIN accepted_rides ar ON ar.month = lm.m
+```

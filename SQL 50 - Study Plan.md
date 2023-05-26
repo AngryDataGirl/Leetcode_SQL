@@ -96,10 +96,10 @@ JOIN Product p ON p.product_id = s.product_id
 https://leetcode.com/problems/customer-who-visited-but-did-not-make-any-transactions/
 
 ```sql
-# Write your MySQL query statement below
 SELECT 
   customer_id,
-  COUNT(visit_id) as count_no_trans # calculates the total visits after filter has been applied
+# calculates the total visits after filter has been applied
+  COUNT(visit_id) as count_no_trans 
 FROM 
   Visits v
 WHERE 
@@ -115,3 +115,76 @@ WHERE
 GROUP BY customer_id # groups results by customer id 
 
 ```
+
+### 197. Rising Temperature
+https://leetcode.com/problems/rising-temperature/
+
+```sql
+SELECT 
+    w1.id
+FROM 
+# create the cross join / cartesian product
+    Weather w1, Weather w2
+WHERE 
+# we are trying to find where the temp was higher 
+    w1.temperature > w2.temperature 
+AND 
+# than previous day
+    datediff(w1.recordDate, w2.recordDate) = 1
+```
+
+### 1661. Average Time of Process per Machine
+https://leetcode.com/problems/average-time-of-process-per-machine/
+
+```sql
+# get the start times only
+WITH start AS
+(
+SELECT 
+    machine_id, process_id, timestamp as start_timestamp
+FROM 
+    Activity
+WHERE activity_type = 
+    'start'
+)
+,
+# get the end times only
+end AS
+(
+SELECT 
+    machine_id, process_id, timestamp as end_timestamp
+FROM 
+    Activity
+WHERE activity_type = 
+    'end'
+)
+
+# the join will create the final table where we can subtract one column from the other
+SELECT 
+    s.machine_id, 
+# need to find average and round to 3 decimal places
+    ROUND(AVG(e.end_timestamp - s.start_timestamp),3) as processing_time
+FROM start s
+JOIN end e
+# ensure the join is correct as the machine and process both have ids
+    ON e.machine_id = s.machine_id
+    AND e.process_id = s.process_id
+# we group by machine id, since the proceses should be avged
+GROUP BY s.machine_id
+```
+
+### 577. Employee Bonus
+https://leetcode.com/problems/employee-bonus/
+
+```sql
+# Write your MySQL query statement below
+SELECT 
+    name, 
+    bonus
+FROM Employee e
+LEFT JOIN Bonus b 
+    ON e.empId = b.empId
+WHERE bonus < 1000
+    OR bonus IS NULL
+```
+

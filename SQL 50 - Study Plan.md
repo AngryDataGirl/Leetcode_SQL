@@ -188,3 +188,68 @@ WHERE bonus < 1000
     OR bonus IS NULL
 ```
 
+# 1280. Students and Examinations
+https://leetcode.com/problems/students-and-examinations/
+
+```sql
+# Write your MySQL query statement below
+WITH attendance_list AS 
+(
+SELECT s.student_id, s.student_name, sub.subject_name
+FROM Students s, Subjects sub
+)
+
+SELECT a.*, COUNT(e.subject_name) AS attended_exams
+FROM attendance_list a 
+LEFT JOIN Examinations e ON e.subject_name = a.subject_name AND e.student_id = a.student_id
+GROUP BY a.student_id, a.student_name, a.subject_name
+ORDER BY a.student_id
+```
+
+# 570. Managers with at Least 5 Direct Reports
+https://leetcode.com/problems/managers-with-at-least-5-direct-reports/
+
+```sql
+# group and count the direct reports
+WITH grouped AS 
+(
+SELECT managerId, COUNT(id) as direct_reports
+FROM Employee
+GROUP BY managerId
+)
+
+#filter for those that have at least 5 direct reports
+SELECT e.name
+FROM grouped g
+JOIN Employee e ON e.id = g.managerId
+WHERE direct_reports >= 5
+```
+
+# 1934. Confirmation Rate
+https://leetcode.com/problems/confirmation-rate/
+
+```sql
+# Write your MySQL query statement below
+
+WITH tr AS 
+(
+SELECT *, count(action) as total_requests
+FROM Confirmations
+GROUP BY user_id
+)
+,
+cr AS 
+(
+SELECT *, count(action) as confirmed_requests
+FROM Confirmations
+WHERE action = 'confirmed' 
+GROUP BY user_id
+)
+
+SELECT 
+    s.user_id, 
+    ROUND(IFNULL(IFNULL(cr.confirmed_requests,0)/IFNULL(tr.total_requests,0),0),2) as confirmation_rate
+FROM Signups s
+LEFT JOIN tr ON tr.user_id = s.user_id
+LEFT JOIN cr ON cr.user_id = s.user_id
+```

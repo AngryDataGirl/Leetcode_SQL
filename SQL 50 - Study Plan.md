@@ -253,3 +253,23 @@ FROM Signups s
 LEFT JOIN tr ON tr.user_id = s.user_id
 LEFT JOIN cr ON cr.user_id = s.user_id
 ```
+
+alternative solution using a CASE WHEN / COUNT statement as opposed to separate CTEs
+```sql
+WITH totals AS 
+(
+SELECT 
+    user_id,
+    COUNT(CASE WHEN action = "confirmed" then 1 ELSE NULL END) as total_confirms,
+    COUNT(action) as total_requested
+FROM Confirmations
+GROUP BY user_id
+)
+
+SELECT 
+    s.user_id,
+    IFNULL(ROUND(t.total_confirms/t.total_requested, 2),0) as confirmation_rate
+FROM Signups s
+LEFT JOIN totals t
+    ON s.user_id = t.user_id
+```

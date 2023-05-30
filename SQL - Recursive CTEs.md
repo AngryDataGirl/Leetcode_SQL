@@ -4,7 +4,6 @@
 https://leetcode.com/problems/find-median-given-frequency-of-numbers/
 
 ```sql
-# Write your MySQL query statement below
 WITH RECURSIVE base AS
 (
     select
@@ -42,10 +41,12 @@ WHERE rn BETWEEN total/2 AND total/2 + 1
 ### 579. Find Cumulative Salary of an Employee
 https://leetcode.com/problems/find-cumulative-salary-of-an-employee/
 
-```sql
-# Write your MySQL query statement below
+- So, I initially failed case 7 due to an incorrect partition (the lag was missing a PARTITION BY and instead I put the ORDER BY id, month) 
+- Without parititioning it by id, the lagged variable will take the previous id / month even if it's a different person
+- ie, with id 3 and month 1 , the lag actually grabbed the later rows of id 2  
 
-# recursive to generate the missing months
+```sql
+# recursive to generate the missing months (1 through 12 whether or not the employee worked) 
 WITH RECURSIVE sal_months AS 
 (
     SELECT 
@@ -64,6 +65,7 @@ WITH RECURSIVE sal_months AS
 ,
 decompressed AS 
 (
+# join the months into the recursive query so we can get 0 for the months not currently in the table 
 SELECT sm.id, sm.month, IFNULL(e.salary,0) as salary
 FROM sal_months sm
 LEFT JOIN Employee e 
@@ -74,6 +76,7 @@ ORDER BY id, month
 ,
 LAGGED as 
 (
+# create the lagged variables, lagging 1 month and lagging 2 month
 SELECT 
     id, month, salary,
     IFNULL(LAG(salary, 1) OVER(PARTITION BY id ORDER BY month),0) as lag1_salary,
@@ -82,6 +85,7 @@ FROM decompressed
 )
 ,
 filter AS (
+# create another row number to remove the max / most recent date 
     SELECT
         row_number() OVER(PARTITION BY id ORDER BY month DESC) as rn, 
         id, 
@@ -90,14 +94,14 @@ filter AS (
     FROM Employee 
 )
 
-SELECT f.id, f.month, 
-# l.salary, lag1_salary, lag2_salary, 
-(l.salary + lag1_salary + lag2_salary) as Salary
+SELECT 
+    f.id,
+    f.month,
+    (l.salary + lag1_salary + lag2_salary) as Salary
 FROM filter f
 LEFT JOIN LAGGED l 
     ON l.id = f.id
     AND l.month = f.month
 WHERE rn <> 1 
-# AND f.id = 3
 ORDER BY id ASC, month DESC
 ```

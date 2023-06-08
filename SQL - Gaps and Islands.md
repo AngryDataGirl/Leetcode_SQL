@@ -5,15 +5,156 @@ This kind of question occurs periodically in the HARD SQL questions on LeetCode.
 https://stackoverflow.com/questions/36927685/count-number-of-consecutive-occurrence-of-values-in-table
 https://mattboegner.com/improve-your-sql-skills-master-the-gaps-islands-problem/
 
-# Given a table:
-
-
 # Difference of Row Numbers
+The "gaps and islands" 
+- "islands" = groups of continuous data 
+- "gaps" = groups where the data is missing across a particular sequence
 
+Thus:
+- "key" - the main sequence, can be created using a window function over the core sequence 
+- "values" - the partitioned values on the sequence which help us create the islands
+- subtracting values from key will create the islands
+
+# outstanding questions
+- how do you know when to use row number, dense rank? or rank?
+
+# Leetcode Examples
+
+## MEDIUM
+
+### 1285. Find the Start and End Number of Continuous Ranges
+https://leetcode.com/problems/find-the-start-and-end-number-of-continuous-ranges/
+
+- key: create the row number because we only have a single column
+- value: log id
+
+```sql
+WITH CTE_row_number AS 
+(
+SELECT 
+    log_id, 
+    row_number() over() AS row_num 
+FROM Logs
+),
+CTE_difference AS
+(
+SELECT 
+    log_id, 
+    (log_id - row_num) AS diff 
+FROM CTE_row_number
+)
+
+SELECT min(log_id) AS start_id, max(log_id) AS end_id
+FROM CTE_difference
+group by diff
+```
+## HARD
+
+### 1225. Report Contiguous Dates
+https://leetcode.com/problems/report-contiguous-dates/
+
+- key: event date
+- values: event date partitioned by period_state
+
+```sql
+WITH cte1 AS 
+(
+SELECT 'failed' as period_state, fail_date as event_date
+FROM Failed
+UNION
+SELECT 'succeeded' as period_state, success_date as event_date
+FROM Succeeded
+ORDER BY event_date
+)
+,
+cte2 AS 
+(
+SELECT *, 
+    row_number() OVER(ORDER BY event_date) as event_id,
+    dense_rank() OVER(PARTITION BY period_state ORDER BY event_date) as drnk
+FROM cte1 
+WHERE year(event_date) = 2019
+)
+,
+cte3 AS 
+(
+SELECT *, event_id - drnk as grp
+FROM cte2
+)
+
+SELECT 
+    period_state, 
+    min(event_date) as start_date, 
+    max(event_date) as end_date 
+FROM cte3
+GROUP BY grp, period_state
+ORDER BY start_date
+```
+
+### 2173. Longest Winning Streak
+https://leetcode.com/problems/longest-winning-streak/
+
+- since we are trying to find the winning streaks
+    - key : match day
+    - values: match day where result = win
+
+```sql
+#add row number
+WITH cte AS 
+(
+SELECT 
+    player_id,
+    match_day, 
+    result, 
+    row_number() OVER(PARTITION BY player_id ORDER BY match_day) as rn
+FROM Matches
+)
+#separate the wins records
+,
+cte2 AS 
+(
+SELECT 
+    player_id,
+    # this creates the group id 
+    rn - ROW_NUMBER() OVER(PARTITION BY player_id ORDER BY match_day) AS group_id
+FROM cte
+WHERE result = 'Win'
+)
+#count the win streaks
+,
+win_streaks AS 
+(
+SELECT 
+    player_id, 
+    count(group_id) as win_streak
+FROM cte2 
+# WHERE player_id = 429        
+GROUP BY player_id, group_id
+)
+
+SELECT DISTINCT 
+    m.player_id, IFNULL(longest_streak,0) as longest_streak
+FROM Matches m
+LEFT JOIN (
+    SELECT player_id, 
+        MAX(win_streak) as longest_streak
+    FROM win_streaks
+    GROUP BY player_id
+) t 
+ON t.player_id = m.player_id
+
+```
 
 ### 2701. Consecutive Transactions with Increasing Amounts
-https://leetcode.com/problems/consecutive-transactions-with-increasing-amounts/description/
+https://leetcode.com/problems/consecutive-transactions-with-increasing-amounts/
 
+- the main trick with this problem is that there are two groups we need to keep track of 
+- first, the consecutive date streaks per customer
+    - the id / key is the transaction dates (since this is the contiguous set we are trying to find)
+    - the values is the transaction date partitioned by the customer id 
+- second, the date streaks where the amount was increasing 
+- note that you have to turn the dates into integer values, else it will fail the last case with customer 29 
+- note that you also have to use row_number(), dense rank will also fail a case 
 
 ```sql
 WITH cte1 AS -- this CTE keeps the rows of the original tables, while creating the first grouping based on consecutive dates
@@ -21,7 +162,6 @@ WITH cte1 AS -- this CTE keeps the rows of the original tables, while creating t
  SELECT
     t.*,
     -- ranking of the dates - ranking of the dates by customer to create groups
-    -- note that you have to turn the dates into integer values, else it will fail the last case with customer 29
     TO_DAYS(T.transaction_date) - row_number() OVER(PARTITION BY t.customer_id ORDER BY t.transaction_date) AS consec_dts_group 
   FROM
     Transactions t

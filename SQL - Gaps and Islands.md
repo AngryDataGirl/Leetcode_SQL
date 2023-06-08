@@ -11,4 +11,118 @@ https://mattboegner.com/improve-your-sql-skills-master-the-gaps-islands-problem/
 # Difference of Row Numbers
 
 
-# Using LAG & a RUNNING TOTAL 
+### 2701. Consecutive Transactions with Increasing Amounts
+https://leetcode.com/problems/consecutive-transactions-with-increasing-amounts/description/
+
+this solution below currently only passes 21 of 22 
+```sql
+WITH cte1 AS -- this CTE keeps the rows of the original tables, while creating the first grouping based on consecutive dates
+(
+ SELECT
+    t.*,
+    -- ranking of the dates - ranking of the dates by customer to create groups
+    t.transaction_date - dense_rank() OVER(PARTITION BY t.customer_id ORDER BY t.transaction_date) AS consec_dts_group 
+  FROM
+    Transactions t
+)
+,
+cte2 AS -- this CTE gives customer_id & the consecutive dates group 
+# | customer_id | grp      |
+# | ----------- | -------- |
+# | 101         | 20230500 |
+# | 105         | 20230500 |
+# | 105         | 20230507 |
+(
+SELECT 
+    customer_id,
+    -- we subtract one from the other to great the islands 
+    consec_dts_group 
+FROM cte1 c1
+-- because a customer can have multiple consecutive grps, we need to group it by customer and grp
+GROUP BY customer_id, consec_dts_group 
+HAVING count(consec_dts_group) >= 3
+)
+,
+cte3a AS -- create lagged variable to see where amount is increasing
+# | transaction_id | customer_id | transaction_date | amount | consecutive_dates_group | lag_amount |
+# | -------------- | ----------- | ---------------- | ------ | ----------------------- | ---------- |
+# | 1              | 101         | 2023-05-01       | 100    | 20230500                | 100        |
+# | 2              | 101         | 2023-05-02       | 150    | 20230500                | 100        |
+# | 3              | 101         | 2023-05-03       | 200    | 20230500                | 150        |
+# | 4              | 102         | 2023-05-01       | 50     | 20230500                | 50         |
+# | 5              | 102         | 2023-05-03       | 100    | 20230501                | 100        |
+# | 6              | 102         | 2023-05-04       | 200    | 20230501                | 100        |
+# | 7              | 105         | 2023-05-01       | 100    | 20230500                | 100        |
+# | 8              | 105         | 2023-05-02       | 150    | 20230500                | 100        |
+( 
+ SELECT
+    c1.*,
+    LAG(c1.amount, 1, c1.amount) -- note that we lag it by 1 interval, the third arg puts the same amount if it is null
+    OVER(PARTITION BY c1.customer_id, c1.consec_dts_group ORDER BY c1.transaction_date) as lag_amount
+FROM cte1 c1
+)
+,
+cte3b AS -- this creates the flag for when the new subgroup starts 
+# | transaction_id | customer_id | transaction_date | amount | consec_dts_group | lag_amount | inc_amt_subgroup |
+# | -------------- | ----------- | ---------------- | ------ | ---------------- | ---------- | ---------------- |
+# | 1              | 101         | 2023-05-01       | 100    | 20230500         | 100        | 1                |
+# | 2              | 101         | 2023-05-02       | 150    | 20230500         | 100        | 0                |
+# | 3              | 101         | 2023-05-03       | 200    | 20230500         | 150        | 0                |
+# | 4              | 102         | 2023-05-01       | 50     | 20230500         | 50         | 1                |
+# | 5              | 102         | 2023-05-03       | 100    | 20230501         | 100        | 1                |
+# | 6              | 102         | 2023-05-04       | 200    | 20230501         | 100        | 0                |
+# | 7              | 105         | 2023-05-01       | 100    | 20230500         | 100        | 1       
+(
+SELECT 
+  c3a.*,
+  (CASE WHEN c3a.amount - c3a.lag_amount <= 0 THEN 1 ELSE 0 END) AS inc_amt_subgroup 
+FROM cte3a c3a
+)
+,
+cte4 AS -- cte2 with the consecutive dates, is joined to cte3b where we created the increasing amount subgroup
+-- this creates a table with both subgroups together
+# | transaction_id | customer_id | transaction_date | amount | consec_dts_group | lag_amount | inc_amt_subgroup |
+# | -------------- | ----------- | ---------------- | ------ | ---------------- | ---------- | ---------------- |
+# | 7              | 105         | 2023-05-01       | 100    | 20230500         | 100        | 1                |
+# | 8              | 105         | 2023-05-02       | 150    | 20230500         | 100        | 0                |
+# | 9              | 105         | 2023-05-03       | 200    | 20230500         | 150        | 0                |
+# | 10             | 105         | 2023-05-04       | 300    | 20230500         | 200        | 0                |
+# | 11             | 105         | 2023-05-12       | 250    | 20230507         | 250        | 1                |
+# | 12             | 105         | 2023-05-13       | 260    | 20230507         | 250        | 0                |
+# | 13             | 105         | 2023-05-14       | 270    | 20230507         | 260        | 0   
+(
+SELECT 
+  c3b.*
+FROM cte3b c3b
+INNER JOIN cte2 c2 
+  ON c3b.customer_id = c2.customer_id
+  AND c3b.consec_dts_group = c2.consec_dts_group
+)
+,
+cte5 AS -- this CTE creates the final grouping 
+# | transaction_id | customer_id | transaction_date | amount | consec_dts_group | lag_amount | inc_amt_subgroup | grp |
+# | -------------- | ----------- | ---------------- | ------ | ---------------- | ---------- | ---------------- | --- |
+# | 7              | 105         | 2023-05-01       | 100    | 20230500         | 100        | 1                | 1   |
+# | 8              | 105         | 2023-05-02       | 150    | 20230500         | 100        | 0                | 1   |
+# | 9              | 105         | 2023-05-03       | 200    | 20230500         | 150        | 0                | 1   |
+# | 10             | 105         | 2023-05-04       | 300    | 20230500         | 200        | 0                | 1   |
+# | 11             | 105         | 2023-05-12       | 250    | 20230507         | 250        | 1                | 2   |
+# | 12             | 105         | 2023-05-13       | 260    | 20230507         | 250        | 0                | 2   |
+# | 13             | 105         | 2023-05-14       | 270    | 202...
+(
+SELECT 
+ c4.*,
+ SUM(c4.inc_amt_subgroup) OVER(PARTITION BY c4.customer_id ORDER BY c4.transaction_date) as final_grp
+FROM cte4 c4
+)
+
+SELECT 
+  customer_id,
+  MIN(transaction_date) as consecutive_start,
+  MAX(transaction_date) as consecutive_end
+FROM cte5 
+GROUP BY customer_id, final_grp
+HAVING count(final_grp) >= 3
+ORDER BY customer_id
+```
+

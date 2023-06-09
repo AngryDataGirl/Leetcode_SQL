@@ -49,6 +49,23 @@ AND manager_id NOT IN (
     SELECT employee_id FROM Employees)
 ORDER BY employee_id
 ```
+### 626. Exchange Seats
+https://leetcode.com/problems/exchange-seats/
+
+```sql
+SELECT
+(CASE 
+    WHEN id % 2 <> 0 AND counts <> id THEN id + 1
+    WHEN id % 2 <> 0 AND counts = id THEN id
+    ELSE id - 1
+    END) as id,
+    student
+FROM Seat,
+    (SELECT
+        COUNT(*) as counts
+    FROM seat) AS seat_counts
+ORDER BY id ASC;
+```
 
 ### 1341. Movie Rating
 https://leetcode.com/problems/movie-rating/

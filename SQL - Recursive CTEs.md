@@ -105,3 +105,44 @@ LEFT JOIN LAGGED l
 WHERE rn <> 1 
 ORDER BY id ASC, month DESC
 ```
+
+### 1767. Find the Subtasks That Did Not Execute
+https://leetcode.com/problems/find-the-subtasks-that-did-not-execute/
+
+also found in : 
+[Advanced leetcode 50 - Window Function and CTEs](https://github.com/AngryDataGirl/Leetcode_SQL/blob/main/Advanced%20SQL%2050%20-%20Window%20Function%20and%20CTE.md)
+
+```sql
+#recursive substask generator
+WITH RECURSIVE subtask_list AS (
+    
+    #anchor member
+    SELECT 1 as subtask_id
+    UNION ALL
+    
+    #recursive member
+    SELECT subtask_id + 1 
+    FROM subtask_list
+    
+    #terminator
+    WHERE subtask_id < (SELECT MAX(subtasks_count) FROM Tasks)
+ )
+ ,
+ 
+#list of tasks and subtasks
+cte2 AS (
+SELECT task_id, subtask_id 
+FROM Tasks, subtask_list
+WHERE subtask_id <= subtasks_count 
+ORDER BY task_id, subtasks_count
+)
+
+#left join and return nulls (since those would be the ones that did not execute)
+SELECT c2.task_id, c2.subtask_id 
+FROM cte2 c2
+LEFT JOIN Executed e 
+    ON c2.task_id = e.task_id 
+    AND c2.subtask_id = e.subtask_id
+WHERE e.subtask_id is NULL
+ORDER by task_id, subtask_id
+```

@@ -146,4 +146,131 @@ WHERE employee_id <> 1
 https://leetcode.com/problems/find-the-quiet-students-in-all-exams/
 
 ```sql
+WITH scores AS 
+(
+SELECT 
+  exam_id, 
+  min(score) as min_score,
+  max(score) as max_score
+FROM Exam
+GROUP BY exam_id
+)
+
+# | exam_id | min_score | max_score |
+# | ------- | --------- | --------- |
+# | 10      | 70        | 90        |
+# | 20      | 80        | 80        |
+# | 30      | 70        | 90        |
+# | 40      | 60        | 80        |
+
+, silent_flag AS 
+(
+SELECT DISTINCT
+  sc.*,  
+  e.student_id,
+  e.score,
+  CASE WHEN e.score = min_score THEN 1 
+    WHEN e.score = max_score THEN 1
+  END AS not_silent,
+  COUNT(e.exam_id) OVER(PARTITION BY student_id) as total_exams_taken
+FROM Exam e
+LEFT JOIN scores sc 
+  ON sc.exam_id = e.exam_id
+)
+, result AS 
+(
+SELECT student_id, total_exams_taken, COUNT(not_silent) as total_not_silent
+FROM silent_flag
+# WHERE silent IS NULL
+GROUP BY student_id, total_exams_taken
+HAVING COUNT(not_silent) = 0 
+)
+
+# | student_id | total_exams_taken | total_not_silent |
+# | ---------- | ----------------- | ---------------- |
+# | 2          | 2                 | 0                |
+
+SELECT *
+FROM Student
+WHERE student_id IN (SELECT student_id FROM result)
+```
+
+### 1767. Find the Subtasks That Did Not Execute
+https://leetcode.com/problems/find-the-subtasks-that-did-not-execute/
+
+```sql
+# Write your MySQL query statement below
+
+#recursive substask generator
+WITH RECURSIVE subtask_list AS (
+    
+    #anchor member
+    SELECT 1 as subtask_id
+    UNION ALL
+    
+    #recursive member
+    SELECT subtask_id + 1 
+    FROM subtask_list
+    
+    #terminator
+    WHERE subtask_id < (SELECT MAX(subtasks_count) FROM Tasks)
+ )
+ ,
+ 
+#list of tasks and subtasks
+cte2 AS (
+SELECT task_id, subtask_id 
+FROM Tasks, subtask_list
+WHERE subtask_id <= subtasks_count 
+ORDER BY task_id, subtasks_count
+)
+
+#left join and return nulls (since those would be the ones that did not execute)
+SELECT c2.task_id, c2.subtask_id 
+FROM cte2 c2
+LEFT JOIN Executed e 
+    ON c2.task_id = e.task_id 
+    AND c2.subtask_id = e.subtask_id
+WHERE e.subtask_id is NULL
+ORDER by task_id, subtask_id
+
+```
+
+### 1225. Report Contiguous Dates
+https://leetcode.com/problems/report-contiguous-dates/
+
+```sql
+# Write your MySQL query statement below
+WITH cte1 AS 
+(
+SELECT 'failed' as period_state, fail_date as event_date
+FROM Failed
+UNION
+SELECT 'succeeded' as period_state, success_date as event_date
+FROM Succeeded
+ORDER BY event_date
+)
+,
+cte2 AS 
+(
+SELECT *, 
+    row_number() OVER(ORDER BY event_date) as event_id,
+    dense_rank() OVER(PARTITION BY period_state ORDER BY event_date) as drnk
+FROM cte1 
+WHERE year(event_date) = 2019
+)
+,
+cte3 AS 
+(
+SELECT *, event_id - drnk as grp
+FROM cte2
+)
+
+SELECT 
+    period_state, 
+    min(event_date) as start_date, 
+    max(event_date) as end_date 
+FROM cte3
+GROUP BY grp, period_state
+ORDER BY start_date
 ```

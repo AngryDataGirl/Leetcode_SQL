@@ -1,6 +1,9 @@
-# SQL
+# SQL - Hard
 
-## Hard - Recursive CTEs
+- [571. Find Median Given Frequency of Numbers](#571-find-median-given-frequency-of-numbers)
+- [579. Find Cumulative Salary of an Employee](#579-find-cumulative-salary-of-an-employee)
+- [1635. Hopper Company Queries I](#1635-hopper-company-queries-i)
+- [1767. Find the Subtasks That Did Not Execute](#1767-find-the-subtasks-that-did-not-execute)
 
 ### 571. Find Median Given Frequency of Numbers
 https://leetcode.com/problems/find-median-given-frequency-of-numbers/
@@ -108,7 +111,7 @@ WHERE rn <> 1
 ORDER BY id ASC, month DESC
 ```
 
-### 1635 Hopper Company Queries I
+### 1635. Hopper Company Queries I
 https://leetcode.com/problems/hopper-company-queries-i/
 
 ```sql

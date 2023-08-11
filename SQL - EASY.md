@@ -3,6 +3,7 @@
 
 - [577. Employee Bonus](#577-employee-bonus)
 - [597. Friend Requests I](#597-friend-requests-i)
+- [1050. Actors and Directors Who Cooperated At Least Three Times](#1050-actors-and-directors-who-cooperated-at-least-three-times)
 - [1757. Recyclable and Low Fat Products](#1757-recyclable-and-low-fat-products)
 
 ### 577. Employee Bonus
@@ -56,6 +57,47 @@ unique_requests AS
 
 SELECT IFNULL(ROUND(total_accepts/total_requests, 2),0.00) AS accept_rate
 FROM unique_accepts, unique_requests
+```
+
+### 1050. Actors and Directors Who Cooperated At Least Three Times
+https://leetcode.com/problems/actors-and-directors-who-cooperated-at-least-three-times/
+
+- the table is already shaped in a way where we can aggregate the actor/director pair
+- the question is simply looking for a group by / having count 
+- you could use a WHERE clause, but you would have to perform the aggregation and count in a subquery / CTE 
+
+Solution using HAVING
+```sql
+SELECT 
+  a1.actor_id, 
+  a1.director_id
+FROM 
+  ActorDirector a1
+GROUP BY 
+  a1.actor_id, 
+  a1.director_id
+HAVING 
+  COUNT(timestamp) >= 3
+```
+
+Solution using WHERE
+```sql
+
+SELECT actor_id, director_id
+FROM
+(
+SELECT 
+  actor_id, 
+  director_id, 
+  count(timestamp) as total_collab
+FROM 
+  ActorDirector
+GROUP BY 
+  actor_id, 
+  director_id
+) t
+WHERE 
+  total_collab >= 3
 ```
 
 ### 1757. Recyclable and Low Fat Products

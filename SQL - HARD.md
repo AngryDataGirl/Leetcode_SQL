@@ -1,9 +1,20 @@
 # SQL - Hard
 
-- [571. Find Median Given Frequency of Numbers](#571-find-median-given-frequency-of-numbers)
-- [579. Find Cumulative Salary of an Employee](#579-find-cumulative-salary-of-an-employee)
-- [1635. Hopper Company Queries I](#1635-hopper-company-queries-i)
-- [1767. Find the Subtasks That Did Not Execute](#1767-find-the-subtasks-that-did-not-execute)
+- [Recursive Queries](#recursive-queries) 
+    - [571. Find Median Given Frequency of Numbers](#571-find-median-given-frequency-of-numbers)
+    - [579. Find Cumulative Salary of an Employee](#579-find-cumulative-salary-of-an-employee)
+    - [1336. Number of Transactions per Visit](#1336-number-of-transactions-per-visit)
+    - [1635. Hopper Company Queries I](#1635-hopper-company-queries-i)
+    - [1651. Hopper Company Queries III](#1651-hopper-company-queries-iii)
+    - [1767. Find the Subtasks That Did Not Execute](#1767-find-the-subtasks-that-did-not-execute)
+
+- [Strings](#strings)  
+    - [2199. Finding the Topic of Each Post](#2199-finding-the-topic-of-each-post)
+    - [2118. Build the Equation](#2118-build-the-equation)
+
+---
+
+## Recursive Queries 
 
 ### 571. Find Median Given Frequency of Numbers
 https://leetcode.com/problems/find-median-given-frequency-of-numbers/
@@ -111,6 +122,51 @@ WHERE rn <> 1
 ORDER BY id ASC, month DESC
 ```
 
+### 1336. Number of Transactions per Visit
+https://leetcode.com/problems/number-of-transactions-per-visit/
+
+```sql
+# Write your MySQL query statement below
+
+#full table with count of transactions
+WITH RECURSIVE cte1 AS 
+(
+SELECT 
+    v.user_id,
+    v.visit_date, 
+    t.transaction_date, 
+    IFNULL(t.amount,0) as amount,
+    sum(case when transaction_date is NOT NULL then 1 else 0 end) as transactions_count 
+FROM Visits v
+LEFT JOIN Transactions t 
+    ON t.user_id = v.user_id
+    AND t.transaction_date = v.visit_date
+GROUP BY v.visit_date, v.user_id
+)
+#create table of counts
+,
+cte2 AS (
+    SELECT 0 as transactions_count
+    UNION ALL
+    SELECT transactions_count + 1
+    FROM cte2
+    WHERE transactions_count < (SELECT MAX(transactions_count) FROM cte1) 
+    )
+#count the visits
+,
+visits AS 
+(
+SELECT transactions_count, COUNT(transactions_count) as visits_count
+FROM cte1
+GROUP BY transactions_count
+)
+
+SELECT c.transactions_count, IFNULL(v.visits_count,0) as visits_count
+FROM cte2 c
+LEFT JOIN visits v 
+    ON c.transactions_count = v.transactions_count
+```
+
 ### 1635. Hopper Company Queries I
 https://leetcode.com/problems/hopper-company-queries-i/
 
@@ -152,6 +208,58 @@ LEFT JOIN active_drivers ad ON ad.month = lm.m
 LEFT JOIN accepted_rides ar ON ar.month = lm.m
 ```
 
+### 1651. Hopper Company Queries III
+https://leetcode.com/problems/hopper-company-queries-iii/
+
+```sql
+# Write your MySQL query statement below
+
+#create anchor months
+WITH RECURSIVE cte AS
+(
+    SELECT 1 as month 
+    UNION ALL
+    SELECT month + 1 
+    FROM cte
+    WHERE month < 12
+)
+# join with relevant data
+,
+cte1 AS (
+SELECT c.month, IFNULL(SUM(t.ride_distance),0) as ride_distance, IFNULL(SUM(t.ride_duration),0) as ride_duration
+FROM cte c 
+LEFT JOIN 
+    (
+        SELECT 
+            ar.ride_id, 
+            ar.ride_distance,
+            ar.ride_duration,
+            r.requested_at, 
+            month(requested_at) as month
+        FROM AcceptedRides ar
+        LEFT JOIN Rides r 
+            ON r.ride_id = ar.ride_id
+        WHERE year(requested_at) = 2020
+    ) t
+    ON c.month = t.month
+    GROUP BY month
+)
+#calculate rolling averages
+,
+avgs AS (
+SELECT 
+    month,
+    ROUND(AVG(ride_distance) OVER(ORDER BY month ROWS BETWEEN CURRENT ROW AND 2 FOLLOWING),2) as average_ride_distance,
+    ROUND(AVG(ride_duration) OVER(ORDER BY month ROWS BETWEEN CURRENT ROW AND 2 FOLLOWING),2) as average_ride_duration
+FROM cte1
+)
+
+SELECT * 
+FROM avgs
+WHERE month <= 10
+ORDER BY month ASC
+```
+
 ### 1767. Find the Subtasks That Did Not Execute
 https://leetcode.com/problems/find-the-subtasks-that-did-not-execute/
 
@@ -191,4 +299,50 @@ LEFT JOIN Executed e
     AND c2.subtask_id = e.subtask_id
 WHERE e.subtask_id is NULL
 ORDER by task_id, subtask_id
+```
+
+## Strings
+
+### 2118. Build the Equation
+https://leetcode.com/problems/build-the-equation/
+
+```sql
+# Write your MySQL query statement below
+WITH a AS (
+SELECT 
+    CASE WHEN factor > 0 THEN '+' ELSE '' END as sign, 
+    factor, 
+    CASE WHEN power = 1 THEN 'X' 
+        WHEN power = 0 THEN '' ELSE CONCAT('X^', power) END as x
+    ,
+    power
+FROM Terms 
+)
+
+SELECT 
+    CONCAT(
+        GROUP_CONCAT(sign, factor, x ORDER BY power DESC SEPARATOR ''),
+        '=0'
+    ) AS equation
+FROM a
+```
+
+### 2199. Finding the Topic of Each Post
+https://leetcode.com/problems/finding-the-topic-of-each-post/
+
+```sql
+WITH cte1 AS 
+(
+SELECT DISTINCT
+    p.post_id, p.content, k.topic_id, k.word
+FROM Posts p
+LEFT JOIN Keywords k
+ON concat(' ', lower(p.content), ' ') like concat('% ', lower(k.word), ' %')
+) 
+
+SELECT 
+    post_id, 
+    COALESCE(GROUP_CONCAT(distinct topic_id order by topic_id),'Ambiguous!') as topic
+FROM cte1
+GROUP BY post_id
 ```

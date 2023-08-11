@@ -4,6 +4,7 @@
     - [571](#571)
     - [579](#579)
     - [1336](#1336)
+    - [1384](#1384)
     - [1635](#1635)
     - [1651](#1651)
     - [1767](#1767)
@@ -14,6 +15,7 @@
     - [1159](#1159)
     - [1412](#1412)
     - [2010](#2010)
+    - [2362](#2362)
 
 - [Strings](#strings)  
     - [2199](#2199)
@@ -175,6 +177,63 @@ SELECT c.transactions_count, IFNULL(v.visits_count,0) as visits_count
 FROM cte2 c
 LEFT JOIN visits v 
     ON c.transactions_count = v.transactions_count
+```
+
+### 1384
+1384. Total Sales Amount by Year
+https://leetcode.com/problems/total-sales-amount-by-year/
+
+- weird casting , no specification in the question, for me it was just the report year that needed to be cast into the proper CHAR type
+
+```sql
+# Write your MySQL query statement below
+
+WITH recursive cte1 AS 
+(
+    #anchor
+    SELECT 2018 as report_year
+    UNION ALL
+    #recursive 
+    SELECT report_year + 1
+    FROM cte1
+    #condition
+    WHERE report_year < (SELECT max(year(period_end)) FROM Sales)
+
+)
+,
+cte2 AS (
+SELECT *, 
+    CASE 
+        #when period start and end is same as report year
+        WHEN year(period_start) = report_year AND year(period_end) = report_year 
+            THEN DATEDIFF(period_end, period_start) + 1
+        #when period start as same as report year but period end is not
+        WHEN year(period_start) = report_year AND year(period_end) <> report_year 
+            THEN DATEDIFF(DATE(CONCAT(year(period_start),"-12-31")), period_start) + 1
+        #when period start and period end both not same as year
+        WHEN year(period_start) <> report_year AND year(period_end) <> report_year
+            THEN DATEDIFF(
+                DATE(CONCAT(report_year,"-12-31")),
+                DATE(CONCAT(report_year,"-01-01"))
+                    ) + 1
+        #when period end is same as report year 
+        WHEN year(period_start) <> report_year AND year(period_end) = report_year
+            THEN DATEDIFF(period_end, DATE(CONCAT(report_year,"-01-01"))) + 1 
+        ELSE DATEDIFF(period_end, period_start)
+        END AS sale_days_in_year
+FROM Sales s, cte1
+WHERE report_year >= year(period_start) AND report_year <= year(period_end)
+ORDER BY product_id
+)
+
+SELECT 
+    c.product_id, 
+    p.product_name, 
+    CAST(c.report_year AS CHAR(4)) as report_year, 
+    sale_days_in_year * average_daily_sales as total_amount
+FROM cte2 c
+LEFT JOIN Product p ON p.product_id = c.product_id 
+ORDER BY c.product_id, c.report_Year
 ```
 
 ### 1635
@@ -446,6 +505,37 @@ SELECT user_id as seller_id, CASE WHEN fav_brand IS NULL THEN 'no' ELSE fav_bran
 FROM Users u
 LEFT JOIN seller_fav sf ON sf.seller_id = u.user_id
 ```
+
+### 1369
+1369. Get the Second Most Recent Activity
+https://leetcode.com/problems/get-the-second-most-recent-activity/
+
+```sql
+# Write your MySQL query statement below
+WITH cte1 AS (
+SELECT DISTINCT 
+    username, 
+    activity, 
+    startDate, 
+    endDate, 
+    row_number() OVER(PARTITION BY username ORDER BY startDate DESC) as rnk 
+FROM UserActivity
+)
+, 
+cte2 AS 
+(
+SELECT username, count(rnk)
+FROM cte1 
+GROUP BY username
+HAVING count(rnk) = 1
+)
+
+SELECT username, activity, startDate, endDate
+FROM cte1
+WHERE rnk = 2 
+OR username IN (SELECT username FROM cte2)
+```
+
 ### 1412
 1412. Find the Quiet Students in All Exams
 https://leetcode.com/problems/find-the-quiet-students-in-all-exams/
@@ -557,6 +647,57 @@ HAVING total_cost < budget
 SELECT employee_id FROM hired_seniors
 UNION
 SELECT employee_id FROM hired_juniors
+```
+
+### 2362 
+2362. Generate the Invoice
+https://leetcode.com/problems/generate-the-invoice/
+
+```sql
+# Write your MySQL query statement below
+
+#get total cost on the invoice
+WITH cte1 AS (
+SELECT 
+    p.invoice_id, 
+    p.product_id, 
+    p.quantity, 
+    pr.price, 
+    SUM(p.quantity * pr.price) as total_price 
+FROM Purchases p
+JOIN Products pr ON pr.product_id = p.product_id 
+GROUP BY invoice_id
+)
+,
+
+#rank the invoice total cost to get the max 
+cte2 AS (
+SELECT 
+    invoice_id,
+    dense_rank() OVER(ORDER BY total_price DESC, invoice_id ASC) as rnk
+FROM cte1
+)
+,
+
+#get the invoice with the highest price and the smallest ID 
+cte3 AS (
+SELECT invoice_id, rnk
+FROM cte2
+WHERE rnk = 1
+)
+
+
+#return final 
+SELECT 
+    pur.product_id, 
+    pur.quantity, 
+    prod.price * pur.quantity as price   
+FROM Purchases pur 
+LEFT JOIN products prod ON 
+    prod.product_id = pur.product_id
+WHERE pur.invoice_id IN (
+    SELECT invoice_id 
+    FROM cte3)
 ```
 
 ## Strings

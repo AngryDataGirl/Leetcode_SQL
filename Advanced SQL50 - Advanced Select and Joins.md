@@ -1,4 +1,4 @@
-# Advanced SQL50 
+# Advanced SQL 50 
 
 ## Advanced Select and Joins
 

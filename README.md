@@ -1,6 +1,13 @@
 # Leetcode_SQL
 
-Nicely commented solutions to Leetcode SQL problems 
+Commented solutions to Leetcode SQL problems 
+
+## Ungrouped SQL 
+- [SQL - EASY](https://github.com/AngryDataGirl/Leetcode_SQL/blob/main/SQL%20-%20EASY.md)
+- [SQL - MEDIUM]
+- [SQL - HARD](https://github.com/AngryDataGirl/Leetcode_SQL/blob/main/SQL%20-%20HARD.md)
+
+## SQL Hard
 
 ## SQL 50 Study PLan
 - [SQL 50 - Study Plan - Select](https://github.com/AngryDataGirl/Leetcode_SQL/blob/main/SQL%2050%20-%20Study%20Plan%20-%20Select.md)

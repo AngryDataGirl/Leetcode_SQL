@@ -3,9 +3,9 @@
 
 - [577. Employee Bonus](#577-employee-bonus)
 - [597. Friend Requests I](#597-friend-requests-i)
+- [1757. Recyclable and Low Fat Products](#1757-recyclable-and-low-fat-products)
 
 ### 577. Employee Bonus
-
 https://leetcode.com/problems/employee-bonus/
 
 ```sql
@@ -56,4 +56,23 @@ unique_requests AS
 
 SELECT IFNULL(ROUND(total_accepts/total_requests, 2),0.00) AS accept_rate
 FROM unique_accepts, unique_requests
+```
+
+### 1757. Recyclable and Low Fat Products
+https://leetcode.com/problems/recyclable-and-low-fat-products/
+
+- filtering data with a WHERE clause 
+- multiple conditions in WHERE clause
+- the data is in a single table
+- the filters are columns in the table 
+- therefore, we can just specify the conditions in a WHERE clause
+
+```sql
+select 
+    product_id 
+from 
+    Products 
+where 
+    low_fats='Y' 
+    and recyclable='Y';
 ```

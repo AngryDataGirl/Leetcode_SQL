@@ -1,6 +1,7 @@
 # SQL - HARD - Window Functions
 
 ## Table of Contents
+- [185](#185) 
 - [262](#262) 
 - [615](#615)
     - pivoting and reshaping tables
@@ -44,7 +45,7 @@ where salaryRank <= 3
 ```
 
 ### 262
-262. Trips and Users
+Trips and Users
 https://leetcode.com/problems/trips-and-users/
 
 ```sql

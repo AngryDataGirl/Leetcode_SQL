@@ -2,12 +2,24 @@
 
 Commented solutions to Leetcode SQL problems 
 
-## Ungrouped SQL 
+## SQL Easy
 - [SQL - EASY](https://github.com/AngryDataGirl/Leetcode_SQL/blob/main/SQL%20-%20EASY.md)
+
+## SQL Easy
 - [SQL - MEDIUM]
-- [SQL - HARD](https://github.com/AngryDataGirl/Leetcode_SQL/blob/main/SQL%20-%20HARD.md)
+
 
 ## SQL Hard
+
+## Recurisve Queries
+- [Recursive Queries](https://github.com/AngryDataGirl/Leetcode_SQL/blob/main/SQL%20-%20HARD%20-%20Recursive%20Queries.md)
+
+## Window Functions
+- [Window Functions](https://github.com/AngryDataGirl/Leetcode_SQL/blob/main/SQL%20-%20HARD%20-%20Window%20Functions.md)
+
+## Strings
+- [Strings](https://github.com/AngryDataGirl/Leetcode_SQL/blob/main/SQL%20-%20HARD%20-%20Strings.md)
+
 
 ## SQL 50 Study PLan
 - [SQL 50 - Study Plan - Select](https://github.com/AngryDataGirl/Leetcode_SQL/blob/main/SQL%2050%20-%20Study%20Plan%20-%20Select.md)

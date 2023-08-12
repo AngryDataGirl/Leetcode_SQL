@@ -1,6 +1,23 @@
-# SQL - HARD
+# SQL - HARD - Window Functions
 
-## Window Functions
+## Table of Contents
+- [262](#262) 
+- [615](#615)
+    - pivoting and reshaping tables
+- [618](#618)
+    - pivot and reshaping tables
+- [1159](#1159)
+- [1194](#1194)
+- [1412](#1412)
+- [1479](#1479)
+- [1972](#1972)
+- [2004](#2004)
+- [2010](#2010)
+- [2362](#2362)
+
+---
+
+## Solutions 
 
 ### 185
 Department Top Three Salaries

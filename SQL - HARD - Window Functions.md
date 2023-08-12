@@ -2,13 +2,21 @@
 
 ## Table of Contents
 - [185](#185) 
-- [262](#262) 
+- [262](#262)
+- [569](#569)
+- [601](#601) 
 - [615](#615)
-    - pivoting and reshaping tables
+    - pivoting and reshaping tables, group average comparison
 - [618](#618)
     - pivot and reshaping tables
+- [1097](#1097)
+- [1127](#1127)
+    - pivot and rehsaping tables
 - [1159](#1159)
 - [1194](#1194)
+- [1225](#1225)
+    - also can be done with recursive cte I think
+- [1336](#1336)
 - [1412](#1412)
 - [1479](#1479)
 - [1972](#1972)
@@ -112,6 +120,34 @@ JOIN medians m
     AND m.median = gr.rnk
 ```
 
+### 601 
+Human Traffic of Stadium
+https://leetcode.com/problems/human-traffic-of-stadium/description/
+
+```sql
+SELECT
+distinct s1.*
+
+FROM
+stadium s1, stadium s2, stadium s3
+
+WHERE
+s1.people >= 100 and
+s2.people >= 100 and
+s3.people >= 100
+
+and
+(
+(s1.id - s2.id = 1 and s1.id - s3.id = 2 and s2.id - s3.id =1)  
+    or
+    (s2.id - s1.id = 1 and s2.id - s3.id = 2 and s1.id - s3.id =1) 
+    or
+    (s3.id - s2.id = 1 and s2.id - s1.id =1 and s3.id - s1.id = 2) 
+)
+
+order by s1.id
+```
+
 ### 615
 Average Salary: Departments VS Company
 https://leetcode.com/problems/average-salary-departments-vs-company/
@@ -160,6 +196,72 @@ FROM Student
 SELECT min(America) as America, min(Asia) as Asia, min(Europe) as Europe
 FROM pivot
 GROUP BY rn
+```
+
+### 1097
+Game Play Analysis V
+https://leetcode.com/problems/game-play-analysis-v/
+
+```sql
+WITH activity1 AS 
+(
+SELECT 
+  row_number() OVER(PARTITION BY player_id ORDER BY event_date) as rn,
+  lead(event_date) OVER(PARTITION BY player_id ORDER BY event_date) as nxt_day,
+  a.*
+FROM Activity a 
+)
+,
+installs AS 
+(
+SELECT 
+  event_date as install_dt,
+  count(player_id) as installs
+FROM activity1
+WHERE rn = 1
+GROUP BY event_date
+)
+,
+# SELECT * FROM installs
+day1 AS 
+(
+SELECT 
+  event_date, 
+  count(player_id) as logged_in 
+FROM Activity1
+WHERE rn = 1 AND datediff(nxt_day,event_date) = 1
+GROUP BY event_date
+)
+
+SELECT 
+  i.install_dt,
+  installs,
+  round(ifnull(logged_in,0)/installs as Day1_retention 
+FROM installs i
+LEFT JOIN day1 d ON d.event_date = i.install_dt
+```
+
+### 1127
+User Purchase Platform
+https://leetcode.com/problems/user-purchase-platform/
+
+```sql
+select c.spend_date, c.platform, sum(coalesce(amount,0)) total_amount, sum(case when amount is null then 0 else 1 end) total_users 
+    from
+    
+    (select distinct spend_date, 'desktop' platform from spending 
+    union all
+    select distinct spend_date, 'mobile' platform from spending 
+    union all
+    select distinct spend_date, 'both' platform from spending) c
+    
+    left join
+    
+    (select user_id, spend_date, case when count(*)=1 then platform else 'both' end platform, sum(amount) amount 
+        from spending group by user_id, spend_date) v
+    
+    on c.spend_date=v.spend_date and c.platform=v.platform
+    group by spend_date, platform;
 ```
 
 ### 1159
@@ -230,6 +332,90 @@ LEFT JOIN Players p
 SELECT group_id, player_id 
 FROM cte3
 WHERE rn = 1
+```
+
+### 1225
+Report Contiguous Dates
+https://leetcode.com/problems/report-contiguous-dates/
+
+```sql
+# Write your MySQL query statement below
+WITH cte1 AS 
+(
+SELECT 'failed' as period_state, fail_date as event_date
+FROM Failed
+UNION
+SELECT 'succeeded' as period_state, success_date as event_date
+FROM Succeeded
+ORDER BY event_date
+)
+,
+cte2 AS 
+(
+SELECT *, 
+    row_number() OVER(ORDER BY event_date) as event_id,
+    dense_rank() OVER(PARTITION BY period_state ORDER BY event_date) as drnk
+FROM cte1 
+WHERE year(event_date) = 2019
+)
+,
+cte3 AS 
+(
+SELECT *, event_id - drnk as grp
+FROM cte2
+)
+
+SELECT 
+    period_state, 
+    min(event_date) as start_date, 
+    max(event_date) as end_date 
+FROM cte3
+GROUP BY grp, period_state
+ORDER BY start_date
+```
+
+### 1336
+Number of Transactions per Visit
+https://leetcode.com/problems/number-of-transactions-per-visit/
+
+```sql
+#full table with count of transactions
+WITH RECURSIVE cte1 AS 
+(
+SELECT 
+    v.user_id,
+    v.visit_date, 
+    t.transaction_date, 
+    IFNULL(t.amount,0) as amount,
+    sum(case when transaction_date is NOT NULL then 1 else 0 end) as transactions_count 
+FROM Visits v
+LEFT JOIN Transactions t 
+    ON t.user_id = v.user_id
+    AND t.transaction_date = v.visit_date
+GROUP BY v.visit_date, v.user_id
+)
+#create table of counts
+,
+cte2 AS (
+    SELECT 0 as transactions_count
+    UNION ALL
+    SELECT transactions_count + 1
+    FROM cte2
+    WHERE transactions_count < (SELECT MAX(transactions_count) FROM cte1) 
+    )
+#count the visits
+,
+visits AS 
+(
+SELECT transactions_count, COUNT(transactions_count) as visits_count
+FROM cte1
+GROUP BY transactions_count
+)
+
+SELECT c.transactions_count, IFNULL(v.visits_count,0) as visits_count
+FROM cte2 c
+LEFT JOIN visits v 
+    ON c.transactions_count = v.transactions_count
 ```
 
 ### 1369

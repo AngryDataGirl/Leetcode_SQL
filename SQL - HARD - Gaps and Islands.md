@@ -1,0 +1,37 @@
+# SQL - HARD - Gaps and Islands (consecutive groups)
+
+## Table of Contents
+- [2752](#2752)
+
+---
+
+## Solutions 
+
+### 2752
+Customers with Maximum Number of Transactions on Consecutive Days
+https://leetcode.com/problems/customers-with-maximum-number-of-transactions-on-consecutive-days/
+
+```sql
+#find consecutive transactions
+WITH grps AS 
+(
+select 
+    customer_id, 
+    TO_DAYS(transaction_date) - rank() over (partition by customer_id order by transaction_date) as grp
+from Transactions  t
+)
+,
+#get max count of consecutive transactions 
+total_transactions AS 
+(
+SELECT customer_id, count(grp) as total_consecutive_trans
+FROM grps
+GROUP BY customer_id, grp
+)
+
+SELECT customer_id 
+FROM total_transactions
+WHERE total_consecutive_trans = (SELECT max(total_consecutive_trans) FROM total_transactions)
+ORDER BY 1
+
+```

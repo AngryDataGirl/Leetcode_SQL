@@ -20,6 +20,7 @@
 - [1412](#1412)
 - [1479](#1479)
 - [1972](#1972)
+- [1892](#1892)
 - [2004](#2004)
 - [2010](#2010)
 - [2362](#2362)
@@ -509,6 +510,44 @@ GROUP BY Category
 ORDER BY Category
 ```
 
+### 1892
+Page Recommendations II
+https://leetcode.com/problems/page-recommendations-ii/
+
+```sql
+# Write your MySQL query statement below
+
+# combine to get all friendships
+WITH mod_friend AS 
+(
+SELECT 
+  user1_id as user, user2_id as friend
+FROM Friendship
+UNION
+SELECT
+  user2_id as user, user1_id as friend
+FROM Friendship
+ORDER BY user
+)
+# need to get all the pages liked by a friend
+,
+friend_likes AS 
+(
+SELECT user as user_id, page_id, count(friend) as friends_likes
+FROM mod_friend f
+LEFT JOIN Likes l 
+  ON l.user_id = f.friend
+# filter clause 
+GROUP BY user, page_id
+)
+
+SELECT 
+  f.*
+FROM friend_likes f
+LEFT JOIN Likes l 
+  ON l.user_id = f.user_id AND l.page_id = f.page_id 
+WHERE l.user_id IS NULL
+```
 
 ### 1972
 First and Last Call On the Same Day

@@ -24,6 +24,7 @@
 - [2004](#2004)
 - [2010](#2010)
 - [2362](#2362)
+- [2720](#2720)
 
 ---
 
@@ -789,4 +790,57 @@ LEFT JOIN products prod ON
 WHERE pur.invoice_id IN (
     SELECT invoice_id 
     FROM cte3)
+```
+
+### 2720
+Popularity Percentage
+https://leetcode.com/problems/popularity-percentage/
+
+```sql
+# Write your MySQL query statement below
+
+
+# total number of friends user has 
+WITH total_friends AS 
+(
+(
+SELECT 
+  user1 as user,
+  user2 as friend
+FROM Friends 
+)
+UNION ALL
+(
+SELECT 
+  user2 as user,
+  user1 as friend
+FROM Friends 
+)
+ORDER BY user ASC, friend ASC
+)
+,
+distinct_friends AS 
+(
+  SELECT DISTINCT *
+  FROM total_friends
+)
+,
+# total users on platform 
+total_users AS 
+(
+  SELECT 
+    count(distinct user) as platform_total
+  FROM total_friends 
+)
+
+#calculate popularity percentage as friends/total users * 100 rounded to 2 decimals
+SELECT 
+user as user1,
+# count(friend),
+# platform_total,
+round((count(friend)/platform_total)*100,2) as percentage_popularity
+FROM distinct_friends, total_users
+GROUP BY user
+
+
 ```

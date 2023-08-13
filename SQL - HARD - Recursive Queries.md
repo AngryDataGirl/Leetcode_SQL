@@ -11,6 +11,7 @@
 - [1767](#1767)
 - [2153](#2153)
 - [2474](#2474)
+- [2484](#2494)
 
 ---
 
@@ -500,5 +501,49 @@ AND a.total >= b.total
 #grab ids that do not have breaks 
 SELECT DISTINCT customer_id FROM Orders
 WHERE customer_id NOT IN (SELECT customer_id FROM breaks)
+```
+
+### 2494
+Merge Overlapping Events in the Same Hall
+https://leetcode.com/problems/merge-overlapping-events-in-the-same-hall/
+
+```sql
+# Write your MySQL query statement below
+
+WITH RECURSIVE c1 AS (
+    SELECT  ROW_NUMBER() OVER (ORDER BY hall_id, start_day) AS event_id,
+            hall_id,
+            start_day,
+            end_day
+    FROM HallEvents
+), c2 AS (
+    SELECT  event_id,
+            hall_id,
+            start_day,
+            end_day
+    FROM c1
+    WHERE event_id = 1
+
+    UNION ALL
+
+    SELECT  c1.event_id,
+            c1.hall_id,
+            # for the same hall if there is overlap, change the start day and end day
+            (CASE WHEN c1.hall_id = c2.hall_id 
+              AND DATEDIFF(c2.end_day,c1.start_day)>=0 
+              THEN c2.start_day 
+              ELSE c1.start_day END) AS start_day,
+            (CASE WHEN c1.hall_id = c2.hall_id 
+              AND DATEDIFF(c2.end_day,c1.start_day)>=0 
+              THEN GREATEST(c2.end_day,c1.end_day) 
+              ELSE c1.end_day END) AS end_day
+    FROM c2 JOIN c1 ON c2.event_id + 1 = c1.event_id
+)
+
+SELECT  hall_id,
+        start_day,
+        MAX(end_day) AS end_day
+FROM c2
+GROUP BY hall_id, start_day
 ```
 

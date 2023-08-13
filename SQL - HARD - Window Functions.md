@@ -19,8 +19,9 @@
 - [1336](#1336)
 - [1412](#1412)
 - [1479](#1479)
-- [1972](#1972)
 - [1892](#1892)
+- [1919](#1919)
+- [1972](#1972)
 - [2004](#2004)
 - [2010](#2010)
 - [2362](#2362)
@@ -548,6 +549,41 @@ FROM friend_likes f
 LEFT JOIN Likes l 
   ON l.user_id = f.user_id AND l.page_id = f.page_id 
 WHERE l.user_id IS NULL
+```
+
+### 1919
+1919. Leetcodify Similar Friends
+https://leetcode.com/problems/leetcodify-similar-friends/description/
+
+```sql
+WITH same_day_listens AS (
+SELECT
+  DISTINCT
+  f.*,
+  l.song_id,
+  l.day
+FROM Friendship f
+LEFT JOIN Listens l ON 
+  l.user_id = f.user1_id 
+LEFT JOIN Listens l2 ON
+  l2.user_id = f.user2_id AND l2.day = l.day 
+WHERE l2.song_id = l.song_id
+)
+, cumulative AS (
+SELECT 
+  sd.*,
+  dense_rank() OVER(PARTITION BY user1_id, user2_id, song_id, day) as rn
+FROM same_day_listens sd
+ORDER BY 1,2,3
+)
+
+  SELECT DISTINCT
+    user1_id,
+    user2_id
+  FROM 
+    cumulative
+  GROUP BY user1_id, user2_id, day
+  HAVING count(rn) >= 3
 ```
 
 ### 1972

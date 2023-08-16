@@ -273,31 +273,51 @@ LEFT JOIN accepted_rides ar ON ar.month = lm.m
 https://leetcode.com/problems/hopper-company-queries-ii/
 
 ```sql
-WITH RECURSIVE months AS 
-    (
-        SELECT 
-            1 as month 
-        UNION ALL
-        SELECT month + 1 FROM months
-        WHERE month < 12
-
-    )
-
-# drivers that accepted at least one ride during month
-,
-at_least_one_ride AS 
+with recursive month (month) as
 (
-SELECT month(r.requested_at) as accepted_ride_month, COUNT(distinct driver_id) as driver_count
-FROM AcceptedRides ar
-LEFT JOIN Rides r ON r.ride_id = ar.ride_id
-WHERE YEAR(r.requested_at) = 2020
-GROUP BY month(r.requested_at)
+    select 1 as month
+    union
+    select month + 1
+    from month
+    where month < 12
+),
+
+total as
+(
+    select
+        distinct m.month,
+        count(distinct d.driver_id) as counter
+    from month m, Drivers d
+    where year(d.join_date) < 2020 or (year(d.join_date) = 2020 and month(d.join_date) <= m.month)
+    group by 1
+    order by 1
+),
+
+accept as
+(
+    select
+        m.month,
+        count(distinct b.driver_id) as counter2
+    from month m
+    left join (select
+                    a.ride_id,
+                    a.driver_id,
+                    r.requested_at
+    from AcceptedRides a left join Rides r on a.ride_id = r.ride_id
+    where
+        year(r.requested_at) = 2020) b on m.month = month(b.requested_at)
+    group by 1
 )
 
-# of available drivers 
-SELECT * 
-FROM Drivers
-WHERE YEAR(join_date) <= 2020
+select
+    m.month,
+    ifnull(round(100*a.counter2/t.counter,2),0) as working_percentage
+from total t
+join accept a
+    on t.month = a.month
+right join month m
+    on t.month = m.month
+order by 1
 ```
 
 ### 1651

@@ -15,11 +15,15 @@ Commented solutions to Leetcode SQL problems
 - [Recursive Queries](https://github.com/AngryDataGirl/Leetcode_SQL/blob/main/SQL%20-%20HARD%20-%20Recursive%20Queries.md)
 
 ## Window Functions
-- [Window Functions](https://github.com/AngryDataGirl/Leetcode_SQL/blob/main/SQL%20-%20HARD%20-%20Window%20Functions.md)
+- [MEDIUM Window Functions](https://github.com/AngryDataGirl/Leetcode_SQL/blob/main/SQL%20-%20MEDIUM%20-%20Window%20Functions.md)
+- [HARD Window Functions](https://github.com/AngryDataGirl/Leetcode_SQL/blob/main/SQL%20-%20HARD%20-%20Window%20Functions.md)
 
 ## Strings
 - [Strings](https://github.com/AngryDataGirl/Leetcode_SQL/blob/main/SQL%20-%20HARD%20-%20Strings.md)
 
+## Gaps and Islands (consecutive items)
+- [HARD Gaps and Islands](https://github.com/AngryDataGirl/Leetcode_SQL/blob/main/SQL%20-%20HARD%20-%20Gaps%20and%20Islands.md)
+- [MEDIUM Gaps and Islands](https://github.com/AngryDataGirl/Leetcode_SQL/blob/main/SQL%20-%20MEDIUM%20-%20Gaps%20and%20Islands.md)
 
 ## SQL 50 Study PLan
 - [SQL 50 - Study Plan - Select](https://github.com/AngryDataGirl/Leetcode_SQL/blob/main/SQL%2050%20-%20Study%20Plan%20-%20Select.md)

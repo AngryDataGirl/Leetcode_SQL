@@ -20,6 +20,7 @@
 - [1412](#1412)
 - [1479](#1479)
 - [1892](#1892)
+- [1917](#1917)
 - [1919](#1919)
 - [1972](#1972)
 - [2004](#2004)
@@ -549,6 +550,47 @@ FROM friend_likes f
 LEFT JOIN Likes l 
   ON l.user_id = f.user_id AND l.page_id = f.page_id 
 WHERE l.user_id IS NULL
+```
+
+### 1917
+https://leetcode.com/problems/leetcodify-friends-recommendations/description/
+Example output correct, expected output wrong, think it's a bug 
+
+```sql
+# Write your MySQL query statement below
+
+WITH same_day_listens AS 
+(
+SELECT DISTINCT
+  l1.user_id AS user1_id,
+  l2.user_id AS user2_id
+FROM Listens l1 
+JOIN Listens l2 
+  ON l1.song_id = l2.song_id 
+  AND l1.day=l2.day 
+  AND l1.user_id < l2.user_id
+WHERE NOT EXISTS(
+    SELECT * 
+    FROM Friendship f 
+    WHERE l1.user_id = f.user1_id 
+    AND l2.user_id = f.user2_id)
+GROUP BY 
+  l1.user_id, 
+  l2.user_id, 
+  l1.day
+HAVING 
+  COUNT(DISTINCT l1.song_id) >= 3
+) 
+
+SELECT 
+  user1_id AS user_id,
+  user2_id AS recommended_id
+FROM same_day_listens
+UNION
+SELECT 
+  user2_id AS user_id,
+  user1_id AS recommended_id
+FROM same_day_listens
 ```
 
 ### 1919

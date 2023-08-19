@@ -27,6 +27,7 @@
 - [2010](#2010)
 - [2362](#2362)
 - [2720](#2720)
+- [2793](#2793)
 
 ---
 
@@ -919,6 +920,28 @@ user as user1,
 round((count(friend)/platform_total)*100,2) as percentage_popularity
 FROM distinct_friends, total_users
 GROUP BY user
+```
 
+### 2793
+Status of Flight Tickets
+https://leetcode.com/problems/status-of-flight-tickets/description/
 
+```sql
+WITH booking_order AS 
+(
+SELECT 
+  p.*,
+  f.capacity,
+  row_number() OVER(PARTITION BY flight_id ORDER BY booking_time) as rn 
+FROM Passengers p
+LEFT JOIN Flights f ON f.flight_id = p.flight_id
+)
+
+SELECT 
+  passenger_id,
+  CASE WHEN rn <= capacity THEN 'Confirmed'
+  ELSE 'Waitlist'
+  END AS Status
+FROM booking_order
+ORDER BY passenger_id ASC
 ```

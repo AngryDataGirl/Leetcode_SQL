@@ -1,11 +1,7 @@
-# SQL - HARD - Pivot and unpivot 
+- [2252. Dynamic Pivoting of a Table](#2252-dynamic-pivoting-of-a-table)
+- [2253. Dynamic Unpivoting of a Table](#2253-dynamic-unpivoting-of-a-table)
 
-## Table of Contents
-- [2252](#2252)
-- [2253](#2253)
-
-### 2252 
-Dynamic Pivoting of a Table
+### 2252. Dynamic Pivoting of a Table
 https://leetcode.com/problems/dynamic-pivoting-of-a-table/description/
 
 ```sql
@@ -28,8 +24,7 @@ BEGIN
 END
 ```
 
-### 2253
-Dynamic Unpivoting of a Table
+### 2253. Dynamic Unpivoting of a Table
 https://leetcode.com/problems/dynamic-unpivoting-of-a-table/solutions/2856713/mysql-dynamically-unpivot-table/
 
 ```sql

@@ -1,3 +1,12 @@
+- [Advanced SQL 50](#advanced-sql-50)
+  - [Basic Joins](#basic-joins)
+    - [175. Combine Two Tables](#175-combine-two-tables)
+    - [1607. Sellers With No Sales](#1607-sellers-with-no-sales)
+    - [1407. Top Travellers](#1407-top-travellers)
+    - [607. Sales Person](#607-sales-person)
+    - [1440. Evaluate Boolean Expression](#1440-evaluate-boolean-expression)
+    - [1212. Team Scores in Football Tournament](#1212-team-scores-in-football-tournament)
+
 # Advanced SQL 50
 
 ## Basic Joins

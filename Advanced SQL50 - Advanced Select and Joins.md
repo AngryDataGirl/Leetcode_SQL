@@ -1,3 +1,15 @@
+- [Advanced SQL 50](#advanced-sql-50)
+  - [Advanced Select and Joins](#advanced-select-and-joins)
+    - [603. Consecutive Available Seats](#603-consecutive-available-seats)
+    - [1795. Rearrange Products Table](#1795-rearrange-products-table)
+    - [613. Shortest Distance in a Line](#613-shortest-distance-in-a-line)
+    - [1965. Employees With Missing Information](#1965-employees-with-missing-information)
+    - [1264. Page Recommendations](#1264-page-recommendations)
+    - [608. Tree Node](#608-tree-node)
+    - [534. Game Play Analysis III](#534-game-play-analysis-iii)
+    - [1783. Grand Slam Titles](#1783-grand-slam-titles)
+    - [1747. Leetflex Banned Accounts](#1747-leetflex-banned-accounts)
+
 # Advanced SQL 50 
 
 ## Advanced Select and Joins

@@ -1,6 +1,11 @@
-# SQL 50
-
-## Basic Aggregate Functions
+- [620. Not Boring Movies](#620-not-boring-movies)
+- [1251. Average Selling Price](#1251-average-selling-price)
+- [1075. Project Employees I](#1075-project-employees-i)
+- [1633. Percentage of Users Attended a Contest](#1633-percentage-of-users-attended-a-contest)
+- [1211. Queries Quality and Percentage](#1211-queries-quality-and-percentage)
+- [1193. Monthly Transactions I](#1193-monthly-transactions-i)
+- [1174. Immediate Food Delivery II](#1174-immediate-food-delivery-ii)
+- [550. Game Play Analysis IV](#550-game-play-analysis-iv)
 
 ### 620. Not Boring Movies
 https://leetcode.com/problems/not-boring-movies/

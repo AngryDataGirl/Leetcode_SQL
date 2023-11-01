@@ -1,6 +1,10 @@
-# SQL 50
-
-## Advanced Select and Joins
+- [1731. The Number of Employees Which Report to Each Employee](#1731-the-number-of-employees-which-report-to-each-employee)
+- [1789. Primary Department for Each Employee](#1789-primary-department-for-each-employee)
+- [610. Triangle Judgement](#610-triangle-judgement)
+- [180. Consecutive Numbers](#180-consecutive-numbers)
+- [1164. Product Price at a Given Date](#1164-product-price-at-a-given-date)
+- [1204. Last Person to Fit in the Bus](#1204-last-person-to-fit-in-the-bus)
+- [1907. Count Salary Categories](#1907-count-salary-categories)
 
 ### 1731. The Number of Employees Which Report to Each Employee
 https://leetcode.com/problems/the-number-of-employees-which-report-to-each-employee/

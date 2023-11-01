@@ -1,3 +1,14 @@
+- [Advanced SQL 50](#advanced-sql-50)
+  - [Basic Aggregate Functions](#basic-aggregate-functions)
+    - [1890. The Latest Login in 2020](#1890-the-latest-login-in-2020)
+    - [511. Game Play Analysis I](#511-game-play-analysis-i)
+    - [1571. Warehouse Manager](#1571-warehouse-manager)
+    - [586. Customer Placing the Largest Number of Orders](#586-customer-placing-the-largest-number-of-orders)
+    - [1741. Find Total Time Spent by Each Employee](#1741-find-total-time-spent-by-each-employee)
+    - [1173. Immediate Food Delivery I](#1173-immediate-food-delivery-i)
+    - [1445. Apples \& Oranges](#1445-apples--oranges)
+    - [1699. Number of Calls Between Two Persons](#1699-number-of-calls-between-two-persons)
+
 # Advanced SQL 50
 
 ## Basic Aggregate Functions

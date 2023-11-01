@@ -1,4 +1,10 @@
-# SQL - HARD - Gaps and Islands (consecutive groups)
+- [Gaps and Islands (consecutive groups)](#gaps-and-islands-consecutive-groups)
+    - [1225. Report Contiguous Dates](#1225-report-contiguous-dates)
+    - [2173. Longest Winning Streak](#2173longest-winning-streak)
+    - [2701. Consecutive Transactions with Increasing Amounts](#2701-consecutive-transactions-with-increasing-amounts)
+    - [2752. Customers with Maximum Number of Transactions on Consecutive Days](#2752-customers-with-maximum-number-of-transactions-on-consecutive-days)
+
+# Gaps and Islands (consecutive groups)
 
 This kind of question occurs periodically in the HARD SQL questions on LeetCode.
 
@@ -16,17 +22,7 @@ Thus:
 - https://stackoverflow.com/questions/36927685/count-number-of-consecutive-occurrence-of-values-in-table
 - https://mattboegner.com/improve-your-sql-skills-master-the-gaps-islands-problem/
 
-## Table of Contents
-- [1225](#1225)
-- [2173](#2173)
-- [2701](#2701)
-- [2752](#2752)
----
-
-## Solutions 
-
-### 1225
-Report Contiguous Dates
+### 1225. Report Contiguous Dates
 https://leetcode.com/problems/report-contiguous-dates/
 
 - key: event date
@@ -250,8 +246,7 @@ ORDER BY customer_id
 # +-------------+-------------------+-----------------+ -->
 ```
 
-### 2752
-Customers with Maximum Number of Transactions on Consecutive Days
+### 2752. Customers with Maximum Number of Transactions on Consecutive Days
 https://leetcode.com/problems/customers-with-maximum-number-of-transactions-on-consecutive-days/
 
 ```sql

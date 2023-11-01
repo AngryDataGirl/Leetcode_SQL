@@ -1,3 +1,13 @@
+- [Advanced SQL 50](#advanced-sql-50)
+  - [Subqueries](#subqueries)
+    - [1350. Students With Invalid Departments](#1350-students-with-invalid-departments)
+    - [1303. Find the Team Size](#1303-find-the-team-size)
+    - [512. Game Play Analysis II](#512-game-play-analysis-ii)
+    - [184. Department Highest Salary](#184-department-highest-salary)
+    - [1549. The Most Recent Orders for Each Product](#1549-the-most-recent-orders-for-each-product)
+    - [1532. The Most Recent Three Orders](#1532-the-most-recent-three-orders)
+    - [1831. Maximum Transaction Each Day](#1831-maximum-transaction-each-day)
+
 # Advanced SQL 50
 
 ## Subqueries

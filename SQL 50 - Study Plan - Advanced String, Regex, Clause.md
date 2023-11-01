@@ -1,6 +1,10 @@
-# SQL 50
-
-## Advanced String Functions / Regex / Clause
+- [1667. Fix Names in a Table](#1667-fix-names-in-a-table)
+- [1527. Patients With a Condition](#1527-patients-with-a-condition)
+- [196. Delete Duplicate Emails](#196-delete-duplicate-emails)
+- [176. Second Highest Salary](#176-second-highest-salary)
+- [1484. Group Sold Products By The Date](#1484-group-sold-products-by-the-date)
+- [1327. List the Products Ordered in a Period](#1327-list-the-products-ordered-in-a-period)
+- [1517. Find Users With Valid E-Mails](#1517-find-users-with-valid-e-mails)
 
 ### 1667. Fix Names in a Table
 https://leetcode.com/problems/fix-names-in-a-table/

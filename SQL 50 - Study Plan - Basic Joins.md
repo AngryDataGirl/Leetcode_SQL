@@ -1,6 +1,15 @@
-# SQL 50
+- [SQL 50](#sql-50)
+  - [Basic Joins](#basic-joins)
+    - [1378. Replace Employee ID With The Unique Identifier](#1378-replace-employee-id-with-the-unique-identifier)
+    - [1068. Product Sales Analysis I](#1068-product-sales-analysis-i)
+    - [1581. Customer Who Visited but Did Not Make Any Transactions](#1581-customer-who-visited-but-did-not-make-any-transactions)
+    - [197. Rising Temperature](#197-rising-temperature)
+    - [1661. Average Time of Process per Machine](#1661-average-time-of-process-per-machine)
+    - [577. Employee Bonus](#577-employee-bonus)
+- [1280. Students and Examinations](#1280-students-and-examinations)
+    - [570. Managers with at Least 5 Direct Reports](#570-managers-with-at-least-5-direct-reports)
+    - [1934. Confirmation Rate](#1934-confirmation-rate)
 
-## Basic Joins
 
 ### 1378. Replace Employee ID With The Unique Identifier
 https://leetcode.com/problems/replace-employee-id-with-the-unique-identifier/

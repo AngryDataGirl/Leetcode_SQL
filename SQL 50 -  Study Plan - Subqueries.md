@@ -1,6 +1,10 @@
-# SQL 50
-
-## Subqueries
+- [1978. Employees Whose Manager Left the Company](#1978-employees-whose-manager-left-the-company)
+- [626. Exchange Seats](#626-exchange-seats)
+- [1341. Movie Rating](#1341-movie-rating)
+- [1321. Restaurant Growth](#1321-restaurant-growth)
+- [602. Friend Requests II: Who Has the Most Friends](#602-friend-requests-ii-who-has-the-most-friends)
+- [585. Investments in 2016](#585-investments-in-2016)
+- [185. Department Top Three Salaries](#185-department-top-three-salaries)
 
 ### 1978. Employees Whose Manager Left the Company
 

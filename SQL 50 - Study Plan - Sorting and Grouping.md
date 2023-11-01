@@ -1,6 +1,10 @@
-# SQL 50
-
-## Sorting and Grouping
+- [2356. Number of Unique Subjects Taught by Each Teacher](#2356-number-of-unique-subjects-taught-by-each-teacher)
+- [1141. User Activity for the Past 30 Days I](#1141-user-activity-for-the-past-30-days-i)
+- [1070. Product Sales Analysis III](#1070-product-sales-analysis-iii)
+- [596. Classes More Than 5 Students](#596-classes-more-than-5-students)
+- [1729. Find Followers Count](#1729-find-followers-count)
+- [619. Biggest Single Number](#619-biggest-single-number)
+- [1045. Customers Who Bought All Products](#1045-customers-who-bought-all-products)
 
 ### 2356. Number of Unique Subjects Taught by Each Teacher
 https://leetcode.com/problems/number-of-unique-subjects-taught-by-each-teacher/

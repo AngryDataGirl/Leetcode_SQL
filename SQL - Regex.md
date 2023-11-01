@@ -1,4 +1,4 @@
-# Regex
+- [2738. Count Occurrences in Text](#2738-count-occurrences-in-text)
 
 ### 2738. Count Occurrences in Text
 https://leetcode.com/problems/count-occurrences-in-text/

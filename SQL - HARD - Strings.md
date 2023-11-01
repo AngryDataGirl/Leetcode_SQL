@@ -1,13 +1,8 @@
-# SQL - HARD - Strings
+- [2118. Build the Equation](#2118-build-the-equation)
+- [2199. Finding the Topic of Each Post](#2199-finding-the-topic-of-each-post)
 
-## Table of Contents
-  - [2199](#2199)
-  - [2118](#2118)
 
----
-
-### 2118
-Build the Equation
+### 2118. Build the Equation
 https://leetcode.com/problems/build-the-equation/
 
 ```sql
@@ -31,8 +26,7 @@ SELECT
 FROM a
 ```
 
-### 2199
-Finding the Topic of Each Post
+### 2199. Finding the Topic of Each Post
 https://leetcode.com/problems/finding-the-topic-of-each-post/
 
 ```sql

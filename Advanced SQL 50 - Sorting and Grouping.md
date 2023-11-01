@@ -1,3 +1,13 @@
+- [Advanced SQL 50](#advanced-sql-50)
+  - [Sorting and Grouping](#sorting-and-grouping)
+    - [1587. Bank Account Summary II](#1587-bank-account-summary-ii)
+    - [182. Duplicate Emails](#182-duplicate-emails)
+    - [1050. Actors and Directors Who Cooperated At Least Three Times](#1050-actors-and-directors-who-cooperated-at-least-three-times)
+    - [1511. Customer Order Frequency](#1511-customer-order-frequency)
+    - [1693. Daily Leads and Partners](#1693-daily-leads-and-partners)
+    - [1495. Friendly Movies Streamed Last Month](#1495-friendly-movies-streamed-last-month)
+    - [1501. Countries You Can Safely Invest In](#1501-countries-you-can-safely-invest-in)
+
 # Advanced SQL 50
 
 ## Sorting and Grouping

@@ -1,22 +1,19 @@
-# SQL - HARD - Recursive Queries
+- [571. Find Median Given Frequency of Numbers](#571-find-median-given-frequency-of-numbers)
+- [579. Find Cumulative Salary of an Employee](#579-find-cumulative-salary-of-an-employee)
+- [1336. Number of Transactions per Visit](#1336-number-of-transactions-per-visit)
+- [1384. Total Sales Amount by Year](#1384total-sales-amount-by-year)
+- [1613. Find the Missing IDs](#1613find-the-missing-ids)
+- [1635. Hopper Company Queries I](#1635-hopper-company-queries-i)
+- [1645. Hopper Company Queries II](#1645-hopper-company-queries-ii)
+- [1651. Hopper Company Queries III](#1651-hopper-company-queries-iii)
+- [1767. Find the Subtasks That Did Not Execute](#1767-find-the-subtasks-that-did-not-execute)
+- [2142. The Number of Passengers in Each Bus I](#2142the-number-of-passengers-in-each-bus-i)
+- [2153. The Number of Passengers in Each Bus II](#2153-the-number-of-passengers-in-each-bus-ii)
+- [2474. Customers With Strictly Increasing Purchases](#2474-customers-with-strictly-increasing-purchases)
+- [2494. Merge Overlapping Events in the Same Hall](#2494-merge-overlapping-events-in-the-same-hall)
 
-## Table of Contents
-- [571](#571)
-- [579](#579)
-- [1336](#1336)
-- [1384](#1384)
-- [1635](#1635)
-- [1645](#1645)
-- [1651](#1651)
-- [1767](#1767)
-- [2153](#2153)
-- [2474](#2474)
-- [2494](#2494)
 
----
-
-### 571
-Find Median Given Frequency of Numbers
+### 571. Find Median Given Frequency of Numbers
 https://leetcode.com/problems/find-median-given-frequency-of-numbers/
 
 ```sql
@@ -54,8 +51,7 @@ FROM ranked
 WHERE rn BETWEEN total/2 AND total/2 + 1
 ```
 
-### 579
-Find Cumulative Salary of an Employee
+### 579. Find Cumulative Salary of an Employee
 https://leetcode.com/problems/find-cumulative-salary-of-an-employee/
 
 - So, I initially failed case 7 due to an incorrect partition (the lag was missing a PARTITION BY and instead I put the ORDER BY id, month) 
@@ -123,8 +119,7 @@ WHERE rn <> 1
 ORDER BY id ASC, month DESC
 ```
 
-### 1336
-Number of Transactions per Visit
+### 1336. Number of Transactions per Visit
 https://leetcode.com/problems/number-of-transactions-per-visit/
 
 ```sql
@@ -169,8 +164,7 @@ LEFT JOIN visits v
     ON c.transactions_count = v.transactions_count
 ```
 
-### 1384
-1384. Total Sales Amount by Year
+### 1384. Total Sales Amount by Year
 https://leetcode.com/problems/total-sales-amount-by-year/
 
 - weird casting , no specification in the question, for me it was just the report year that needed to be cast into the proper CHAR type
@@ -226,8 +220,27 @@ LEFT JOIN Product p ON p.product_id = c.product_id
 ORDER BY c.product_id, c.report_Year
 ```
 
-### 1635
-Hopper Company Queries I
+### 1613. Find the Missing IDs
+https://leetcode.com/problems/find-the-missing-ids/
+
+```sql
+WITH RECURSIVE cte AS 
+(
+    SELECT 1 AS id
+    UNION ALL
+    SELECT id + 1 
+    FROM cte
+    WHERE id < (SELECT max(customer_id) FROM Customers)
+)
+
+SELECT id as ids
+FROM cte
+WHERE id NOT IN (
+    SELECT customer_id FROM Customers
+)
+```
+
+### 1635. Hopper Company Queries I
 https://leetcode.com/problems/hopper-company-queries-i/
 
 ```sql
@@ -268,8 +281,7 @@ LEFT JOIN active_drivers ad ON ad.month = lm.m
 LEFT JOIN accepted_rides ar ON ar.month = lm.m
 ```
 
-### 1645
-1645. Hopper Company Queries II
+### 1645. Hopper Company Queries II
 https://leetcode.com/problems/hopper-company-queries-ii/
 
 ```sql
@@ -320,8 +332,7 @@ right join month m
 order by 1
 ```
 
-### 1651
-Hopper Company Queries III
+### 1651. Hopper Company Queries III
 https://leetcode.com/problems/hopper-company-queries-iii/
 
 ```sql
@@ -373,8 +384,7 @@ WHERE month <= 10
 ORDER BY month ASC
 ```
 
-### 1767
-Find the Subtasks That Did Not Execute
+### 1767. Find the Subtasks That Did Not Execute
 https://leetcode.com/problems/find-the-subtasks-that-did-not-execute/
 
 also found in : 
@@ -414,8 +424,52 @@ LEFT JOIN Executed e
 WHERE e.subtask_id is NULL
 ORDER by task_id, subtask_id
 ```
-### 2153
-The Number of Passengers in Each Bus II
+
+### 2142. The Number of Passengers in Each Bus I
+https://leetcode.com/problems/the-number-of-passengers-in-each-bus-i/
+
+```sql
+# Write your MySQL query statement below
+WITH RECURSIVE cte AS (
+    SELECT 1 as arrival_time
+    UNION ALL
+    SELECT arrival_time + 1 
+    FROM cte
+    WHERE arrival_time < (SELECT max(arrival_time) FROM Buses)
+)
+,
+sched AS (
+SELECT c.arrival_time, b.bus_id, p.passenger_id
+FROM cte c
+LEFT JOIN Buses b ON b.arrival_time = c.arrival_time
+LEFT JOIN Passengers p ON p.arrival_time = c.arrival_time
+)
+,
+#fill values
+cte1 AS (
+SELECT *, row_number() OVER() as rn
+FROM sched
+)
+,
+cte2 AS (
+    SELECT arrival_time, bus_id, passenger_id, rn, COUNT(bus_id) OVER(ORDER BY rn DESC) as cnt
+    FROM cte1 
+)
+,
+cte3 AS (
+SELECT arrival_time, bus_id, passenger_id, first_value(bus_id) OVER(PARTITION BY cnt) as bus_id2
+FROM cte2
+)
+
+#get bus
+SELECT bus_id2 as bus_id, COUNT(passenger_id) as passengers_cnt
+FROM cte3
+GROUP BY bus_id2
+ORDER BY bus_id2 ASC
+```
+
+
+### 2153. The Number of Passengers in Each Bus II
 https://leetcode.com/problems/the-number-of-passengers-in-each-bus-ii/
 
 ```sql
@@ -450,8 +504,7 @@ D AS(
 SELECT bus_id, passager_taken AS passengers_cnt FROM D ORDER BY 1
 ```
 
-### 2474
-Customers With Strictly Increasing Purchases
+### 2474. Customers With Strictly Increasing Purchases
 https://leetcode.com/problems/customers-with-strictly-increasing-purchases/
 
 ```sql
@@ -523,8 +576,7 @@ SELECT DISTINCT customer_id FROM Orders
 WHERE customer_id NOT IN (SELECT customer_id FROM breaks)
 ```
 
-### 2494
-Merge Overlapping Events in the Same Hall
+### 2494. Merge Overlapping Events in the Same Hall
 https://leetcode.com/problems/merge-overlapping-events-in-the-same-hall/
 
 ```sql

@@ -1,13 +1,8 @@
-# SQL - MEDIUM - Gaps and Islands (consecutive groups)
-
-## Table of Contents
-- [1285](#1285)
+- [1285. Find the Start and End Number of Continuous Ranges](#1285find-the-start-and-end-number-of-continuous-ranges)
   
 ---
 
-## Solutions 
-
-### 1285. Find the Start and End Number of Continuous Ranges
+# 1285. Find the Start and End Number of Continuous Ranges
 https://leetcode.com/problems/find-the-start-and-end-number-of-continuous-ranges/
 
 - key: create the row number because we only have a single column

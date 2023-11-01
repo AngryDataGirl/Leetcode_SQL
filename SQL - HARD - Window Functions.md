@@ -1,40 +1,29 @@
-# SQL - HARD - Window Functions
+- [185. Department Top Three Salaries](#185-department-top-three-salaries)
+- [262. Trips and Users](#262-trips-and-users)
+- [569. Median Employee Salary](#569-median-employee-salary)
+- [601. Human Traffic of Stadium](#601-human-traffic-of-stadium)
+- [615/ Average Salary: Departments VS Company](#615-average-salary-departments-vs-company)
+- [618. Students Report By Geography](#618-students-report-by-geography)
+- [1097. Game Play Analysis V](#1097-game-play-analysis-v)
+- [1127. User Purchase Platform](#1127-user-purchase-platform)
+- [1159. Market Analysis II](#1159-market-analysis-ii)
+- [1194. Tournament Winners](#1194-tournament-winners)
+- [1225. Report Contiguous Dates](#1225-report-contiguous-dates)
+- [1336. Number of Transactions per Visit](#1336-number-of-transactions-per-visit)
+- [1369. Get the Second Most Recent Activity](#1369-get-the-second-most-recent-activity)
+- [1412. Find the Quiet Students in All Exams](#1412find-the-quiet-students-in-all-exams)
+- [1479. Sales by Day of the Week](#1479-sales-by-day-of-the-week)
+- [1892. Page Recommendations II](#1892-page-recommendations-ii)
+- [1917. Leetcodify Friends Recommendations](#1917-leetcodify-friends-recommendations)
+- [1919. Leetcodify Similar Friends](#1919-leetcodify-similar-friends)
+- [1972. First and Last Call On the Same Day](#1972-first-and-last-call-on-the-same-day)
+- [2004. The Number of Seniors and Juniors to Join the Company](#2004-the-number-of-seniors-and-juniors-to-join-the-company)
+- [2010. The Number of Seniors and Juniors to Join the Company II](#2010-the-number-of-seniors-and-juniors-to-join-the-company-ii)
+- [2362. Generate the Invoice](#2362generate-the-invoice)
+- [2720. Popularity Percentage](#2720-popularity-percentage)
+- [2793. Status of Flight Tickets](#2793-status-of-flight-tickets)
 
-## Table of Contents
-- [185](#185) 
-- [262](#262)
-- [569](#569)
-- [601](#601) 
-- [615](#615)
-    - pivoting and reshaping tables, group average comparison
-- [618](#618)
-    - pivot and reshaping tables
-- [1097](#1097)
-- [1127](#1127)
-    - pivot and rehsaping tables
-- [1159](#1159)
-- [1194](#1194)
-- [1225](#1225)
-    - also can be done with recursive cte I think
-- [1336](#1336)
-- [1412](#1412)
-- [1479](#1479)
-- [1892](#1892)
-- [1917](#1917)
-- [1919](#1919)
-- [1972](#1972)
-- [2004](#2004)
-- [2010](#2010)
-- [2362](#2362)
-- [2720](#2720)
-- [2793](#2793)
-
----
-
-## Solutions 
-
-### 185
-Department Top Three Salaries
+### 185. Department Top Three Salaries
 https://leetcode.com/problems/department-top-three-salaries/
 
 ```sql
@@ -57,8 +46,7 @@ join Department d on d.id = result.departmentId
 where salaryRank <= 3
 ```
 
-### 262
-Trips and Users
+### 262. Trips and Users
 https://leetcode.com/problems/trips-and-users/
 
 ```sql
@@ -89,8 +77,7 @@ select
     having request_at between "2013-10-01" AND "2013-10-03";
 ```
 
-### 569 
-Median Employee Salary
+### 569. Median Employee Salary
 https://leetcode.com/problems/median-employee-salary/
 
 ```sql
@@ -125,8 +112,7 @@ JOIN medians m
     AND m.median = gr.rnk
 ```
 
-### 601 
-Human Traffic of Stadium
+### 601. Human Traffic of Stadium
 https://leetcode.com/problems/human-traffic-of-stadium/description/
 
 ```sql
@@ -153,8 +139,7 @@ and
 order by s1.id
 ```
 
-### 615
-Average Salary: Departments VS Company
+### 615/ Average Salary: Departments VS Company
 https://leetcode.com/problems/average-salary-departments-vs-company/
 
 ```sql
@@ -183,8 +168,8 @@ DISTINCT pay_month, department_id,
         ELSE 'same' END as comparison
 FROM cte2
 ```
-### 618
-Students Report By Geography
+
+### 618. Students Report By Geography
 https://leetcode.com/problems/students-report-by-geography/
 
 ```sql
@@ -203,8 +188,7 @@ FROM pivot
 GROUP BY rn
 ```
 
-### 1097
-Game Play Analysis V
+### 1097. Game Play Analysis V
 https://leetcode.com/problems/game-play-analysis-v/
 
 ```sql
@@ -246,8 +230,7 @@ FROM installs i
 LEFT JOIN day1 d ON d.event_date = i.install_dt
 ```
 
-### 1127
-User Purchase Platform
+### 1127. User Purchase Platform
 https://leetcode.com/problems/user-purchase-platform/
 
 ```sql
@@ -269,8 +252,7 @@ select c.spend_date, c.platform, sum(coalesce(amount,0)) total_amount, sum(case 
     group by spend_date, platform;
 ```
 
-### 1159
-Market Analysis II
+### 1159. Market Analysis II
 https://leetcode.com/problems/market-analysis-ii/
 
 ```sql
@@ -295,8 +277,7 @@ FROM Users u
 LEFT JOIN seller_fav sf ON sf.seller_id = u.user_id
 ```
 
-### 1194
-Tournament Winners
+### 1194. Tournament Winners
 https://leetcode.com/problems/tournament-winners/
 
 ```sql
@@ -339,8 +320,7 @@ FROM cte3
 WHERE rn = 1
 ```
 
-### 1225
-Report Contiguous Dates
+### 1225. Report Contiguous Dates
 https://leetcode.com/problems/report-contiguous-dates/
 
 ```sql
@@ -379,8 +359,7 @@ GROUP BY grp, period_state
 ORDER BY start_date
 ```
 
-### 1336
-Number of Transactions per Visit
+### 1336. Number of Transactions per Visit
 https://leetcode.com/problems/number-of-transactions-per-visit/
 
 ```sql
@@ -423,8 +402,7 @@ LEFT JOIN visits v
     ON c.transactions_count = v.transactions_count
 ```
 
-### 1369
-1369. Get the Second Most Recent Activity
+### 1369. Get the Second Most Recent Activity
 https://leetcode.com/problems/get-the-second-most-recent-activity/
 
 ```sql
@@ -453,8 +431,7 @@ WHERE rnk = 2
 OR username IN (SELECT username FROM cte2)
 ```
 
-### 1412
-1412. Find the Quiet Students in All Exams
+### 1412. Find the Quiet Students in All Exams
 https://leetcode.com/problems/find-the-quiet-students-in-all-exams/
 
 ```sql
@@ -495,8 +472,7 @@ AND
     scores.student_id NOT IN (SELECT student_id FROM ls)
 ```
 
-### 1479 
-Sales by Day of the Week
+### 1479. Sales by Day of the Week
 https://leetcode.com/problems/sales-by-day-of-the-week/
 
 ```sql
@@ -514,8 +490,7 @@ GROUP BY Category
 ORDER BY Category
 ```
 
-### 1892
-Page Recommendations II
+### 1892. Page Recommendations II
 https://leetcode.com/problems/page-recommendations-ii/
 
 ```sql
@@ -553,8 +528,9 @@ LEFT JOIN Likes l
 WHERE l.user_id IS NULL
 ```
 
-### 1917
-https://leetcode.com/problems/leetcodify-friends-recommendations/description/
+### 1917. Leetcodify Friends Recommendations
+https://leetcode.com/problems/leetcodify-friends-recommendations/
+
 Example output correct, expected output wrong, think it's a bug 
 
 ```sql
@@ -594,8 +570,7 @@ SELECT
 FROM same_day_listens
 ```
 
-### 1919
-1919. Leetcodify Similar Friends
+### 1919. Leetcodify Similar Friends
 https://leetcode.com/problems/leetcodify-similar-friends/description/
 
 ```sql
@@ -629,8 +604,7 @@ ORDER BY 1,2,3
   HAVING count(rn) >= 3
 ```
 
-### 1972
-First and Last Call On the Same Day
+### 1972. First and Last Call On the Same Day
 https://leetcode.com/problems/first-and-last-call-on-the-same-day/
 
 ```sql
@@ -686,8 +660,7 @@ JOIN last_call lc
     AND fc.call_date = lc.call_date
 ```
 
-### 2004 
-The Number of Seniors and Juniors to Join the Company
+### 2004. The Number of Seniors and Juniors to Join the Company
 https://leetcode.com/problems/the-number-of-seniors-and-juniors-to-join-the-company/
 
 ```sql
@@ -749,8 +722,7 @@ GROUP BY experience
 ```
 
 
-### 2010
-The Number of Seniors and Juniors to Join the Company II
+### 2010. The Number of Seniors and Juniors to Join the Company II
 https://leetcode.com/problems/the-number-of-seniors-and-juniors-to-join-the-company-ii/
 
 ```sql
@@ -820,8 +792,7 @@ UNION
 SELECT employee_id FROM hired_juniors
 ```
 
-### 2362 
-2362. Generate the Invoice
+### 2362. Generate the Invoice
 https://leetcode.com/problems/generate-the-invoice/
 
 ```sql
@@ -871,14 +842,10 @@ WHERE pur.invoice_id IN (
     FROM cte3)
 ```
 
-### 2720
-Popularity Percentage
+### 2720. Popularity Percentage
 https://leetcode.com/problems/popularity-percentage/
 
 ```sql
-# Write your MySQL query statement below
-
-
 # total number of friends user has 
 WITH total_friends AS 
 (
@@ -922,8 +889,7 @@ FROM distinct_friends, total_users
 GROUP BY user
 ```
 
-### 2793
-Status of Flight Tickets
+### 2793. Status of Flight Tickets
 https://leetcode.com/problems/status-of-flight-tickets/description/
 
 ```sql

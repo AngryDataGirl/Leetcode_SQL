@@ -70,6 +70,7 @@
 - [2504. Concatenate the Name and the Profession](#2504concatenate-the-name-and-the-profession)
 - [2329. Product Sales Analysis V](#2329product-sales-analysis-v)
 - [2480. Form a Chemical Bond](#2480form-a-chemical-bond)
+- [2985. Calculate Compressed Mean](#2985-calculate-compressed-mean)
 
 ### 175. Combine Two Tables
 https://leetcode.com/problems/combine-two-tables/
@@ -1361,4 +1362,13 @@ WHERE type = 'Nonmetal')
 
 SELECT m.symbol as metal, nm.symbol as nonmetal
 FROM metal m, nonmetal nm
+```
+
+### 2985. Calculate Compressed Mean
+https://leetcode.com/problems/calculate-compressed-mean/
+
+```sql
+SELECT 
+    ROUND(SUM(item_count*order_occurrences)/SUM(order_occurrences),2) as average_items_per_order
+FROM orders
 ```

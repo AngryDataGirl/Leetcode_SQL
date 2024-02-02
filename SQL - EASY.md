@@ -71,6 +71,7 @@
 - [2329. Product Sales Analysis V](#2329product-sales-analysis-v)
 - [2480. Form a Chemical Bond](#2480form-a-chemical-bond)
 - [2985. Calculate Compressed Mean](#2985-calculate-compressed-mean)
+- [2987. Find Expensive Cities](#2987-find-expensive-cities)
 
 ### 175. Combine Two Tables
 https://leetcode.com/problems/combine-two-tables/
@@ -1371,4 +1372,30 @@ https://leetcode.com/problems/calculate-compressed-mean/
 SELECT 
     ROUND(SUM(item_count*order_occurrences)/SUM(order_occurrences),2) as average_items_per_order
 FROM orders
+```
+
+### 2987. Find Expensive Cities
+https://leetcode.com/problems/find-expensive-cities/
+
+```sql
+
+SELECT city
+FROM 
+(
+
+    SELECT city, avg_price 
+    FROM (
+        SELECT 
+            city, avg(price) as avg_price
+        FROM
+            Listings
+        GROUP BY city
+        ) t
+    HAVING avg_price > (SELECT avg(price) as price FROM Listings)
+
+) t2
+
+ORDER BY city ASC
+
+
 ```

@@ -24,6 +24,8 @@
 - [2324. Product Sales Analysis IV](#2324product-sales-analysis-iv)
 - [2346. Compute the Rank as a Percentage](#2346-compute-the-rank-as-a-percentage)
 - [2820. Election Results](#2820-election-results)
+- [2854. Rolling Average Steps](#2854-rolling-average-steps)
+
 
 ### 177. Nth Highest Salary
 https://leetcode.com/problems/nth-highest-salary/
@@ -610,4 +612,32 @@ SELECT candidate
 FROM votes v
 WHERE total IN (SELECT max(total) FROM votes)
 ORDER BY candidate ASC
+```
+
+### 2854. Rolling Average Steps
+https://leetcode.com/problems/rolling-average-steps/
+
+```sql
+# Write your MySQL query statement below
+SELECT user_id, steps_date, rolling_average
+FROM
+    (
+    SELECT 
+        user_id,
+        steps_date,
+        # this creates the rolling average
+        round(AVG(steps_count) OVER(
+            PARTITION BY user_id 
+            ORDER BY steps_date 
+            RANGE BETWEEN INTERVAL 2 DAY PRECEDING AND CURRENT ROW),2) as rolling_average,
+        # this will get the dates for the 3 day window (or 2 days up to that date)
+        lag(steps_date,2) OVER(
+            PARTITION BY user_id 
+            ORDER BY steps_date) as three_day_window
+    FROM Steps s 
+    ) t
+# this filters our entries for those that have the 3 day window , or date diff lag of 2 
+WHERE datediff(steps_date, three_day_window) = 2
+order by 1, 2
+;
 ```

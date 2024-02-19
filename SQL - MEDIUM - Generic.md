@@ -16,6 +16,7 @@
 - [2308. Arrange Table by Gender](#2308-arrange-table-by-gender)
 - [2298. Tasks Count in the Weekend](#2298tasks-count-in-the-weekend)
 - [2372. Calculate the Influence of Each Salesperson](#2372calculate-the-influence-of-each-salesperson)
+- [2893. Calculate Orders Within Each Interval](#2893-calculate-orders-within-each-interval)
 
 
 ### 612. Shortest Distance in a Plane
@@ -361,4 +362,16 @@ FROM Salesperson sp
 LEFT JOIN Customer c ON c.salesperson_id = sp.salesperson_id
 LEFT JOIN Sales s ON s.customer_id = c.customer_id
 GROUP BY sp.salesperson_id
+```
+### 2893. Calculate Orders Within Each Interval
+https://leetcode.com/problems/calculate-orders-within-each-interval/
+
+```SQL
+# Write your MySQL query statement below
+SELECT 
+    CEIL(minute/6) as interval_no,
+    SUM(order_count) as total_orders  
+FROM Orders
+GROUP BY 1
+ORDER BY 1 
 ```

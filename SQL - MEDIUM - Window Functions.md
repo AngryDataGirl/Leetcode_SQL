@@ -25,6 +25,8 @@
 - [2346. Compute the Rank as a Percentage](#2346-compute-the-rank-as-a-percentage)
 - [2820. Election Results](#2820-election-results)
 - [2854. Rolling Average Steps](#2854-rolling-average-steps)
+- [2984. Find Peak Calling Hours for Each City](#2984-find-peak-calling-hours-for-each-city)
+- [2986. Find Third Transaction](#2986-find-third-transaction)
 
 
 ### 177. Nth Highest Salary
@@ -640,4 +642,59 @@ FROM
 WHERE datediff(steps_date, three_day_window) = 2
 order by 1, 2
 ;
+```
+
+
+### 2984. Find Peak Calling Hours for Each City
+https://leetcode.com/problems/find-peak-calling-hours-for-each-city/
+
+```sql
+WITH totals as 
+(
+SELECT 
+    city, 
+    HOUR(call_time) as calls_per_hour,
+    count(caller_id) as total_calls
+FROM Calls
+GROUP BY city, HOUR(call_time)
+)
+, ranked_hours AS 
+(
+SELECT 
+    t.*,
+    dense_rank() OVER(PARTITION BY city ORDER BY total_calls DESC) as rn 
+FROM totals t
+)
+
+SELECT 
+    city,
+    calls_per_hour as peak_calling_hour,
+    total_calls as number_of_calls
+FROM ranked_hours
+WHERE rn = 1 
+ORDER BY calls_per_hour DESC, city DESC
+```
+
+### 2986. Find Third Transaction
+https://leetcode.com/problems/find-third-transaction/description/
+
+```sql
+# Write your MySQL query statement below
+with Transactions2 AS 
+(
+SELECT 
+t.*, 
+lag(spend,1) OVER(PARTITION BY user_id ORDER BY transaction_date ASC) as prev_spend,
+lag(spend,2) OVER(PARTITION BY user_id ORDER BY transaction_date ASC) as prev_spend2,
+row_number() OVER(PARTITION BY user_id ORDER BY transaction_date ASC) as rn 
+FROM Transactions t 
+)
+
+SELECT 
+    user_id, 
+    spend as third_transaction_spend,
+    transaction_date as third_transaction_date 
+FROM Transactions2
+WHERE rn = 3
+AND spend > prev_spend and spend > prev_spend2
 ```

@@ -11,6 +11,7 @@
 - [2153. The Number of Passengers in Each Bus II](#2153-the-number-of-passengers-in-each-bus-ii)
 - [2474. Customers With Strictly Increasing Purchases](#2474-customers-with-strictly-increasing-purchases)
 - [2494. Merge Overlapping Events in the Same Hall](#2494-merge-overlapping-events-in-the-same-hall)
+- [2994. Friday Purchases II](#2994-friday-purchases-ii)
 
 
 ### 571. Find Median Given Frequency of Numbers
@@ -619,3 +620,33 @@ FROM c2
 GROUP BY hall_id, start_day
 ```
 
+
+### 2994. Friday Purchases II
+https://leetcode.com/problems/friday-purchases-ii/
+
+```sql
+
+WITH RECURSIVE nov_fridays AS 
+(
+    SELECT '2023-11-03' AS purchase_date
+    UNION ALL
+    SELECT DATE_ADD(purchase_date, INTERVAL 7 DAY) AS purchase_date
+    FROM nov_fridays
+    WHERE purchase_date < '2023-11-24'
+)
+
+SELECT 
+    RANK() OVER(ORDER BY purchase_date) as week_of_month,
+    purchase_date, 
+    total_amount
+FROM 
+( 
+SELECT 
+    n.purchase_date,
+    IFNULL(sum(amount_spend),0) as total_amount
+FROM nov_fridays n
+LEFT JOIN Purchases p 
+    ON p.purchase_date = n.purchase_date 
+GROUP BY 1
+) t 
+```

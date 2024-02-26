@@ -22,6 +22,8 @@
 - [2362. Generate the Invoice](#2362generate-the-invoice)
 - [2720. Popularity Percentage](#2720-popularity-percentage)
 - [2793. Status of Flight Tickets](#2793-status-of-flight-tickets)
+- [2991. Top Three Wineries](#2991-top-three-wineries)
+- [2995. Viewers Turned Streamers](#2995-viewers-turned-streamers)
 
 ### 185. Department Top Three Salaries
 https://leetcode.com/problems/department-top-three-salaries/
@@ -910,4 +912,64 @@ SELECT
   END AS Status
 FROM booking_order
 ORDER BY passenger_id ASC
+```
+
+### 2991. Top Three Wineries
+
+```sql
+WITH RankedWineries AS (
+    SELECT
+        country,
+        winery,
+        SUM(points) as total_points,
+        ROW_NUMBER() OVER (PARTITION BY country ORDER BY SUM(points) DESC, winery ASC) as winery_rank
+    FROM Wineries
+    GROUP BY country, winery
+)
+,
+rw_clean AS (
+    SELECT 
+        country, 
+        CONCAT(winery, ' (', total_points, ')') as winery,
+        winery_rank
+    FROM RankedWineries
+)
+
+SELECT
+    country,
+    CASE WHEN winery_rank = 1 THEN winery END as top_winery,
+    COALESCE(MAX(CASE WHEN winery_rank = 2 THEN winery END), 'No second winery') as second_winery,
+    COALESCE(MAX(CASE WHEN winery_rank = 3 THEN winery END), 'No third winery') as third_winery
+FROM rw_clean
+GROUP BY country
+ORDER BY country;
+```
+### 2995. Viewers Turned Streamers
+https://leetcode.com/problems/viewers-turned-streamers/ 
+
+```python
+# Write your MySQL query statement below
+
+WITH viewer_first 
+AS (
+
+    SELECT * FROM 
+    (    
+    SELECT 
+        s.*, 
+        row_number() OVER(PARTITION BY user_id ORDER BY session_start ASC) as rn
+    FROM Sessions s 
+    ) t
+    where rn = 1 
+    and session_type = 'Viewer'
+)
+
+SELECT 
+    s.user_id,
+    COUNT(CASE WHEN session_type = 'Streamer' THEN 1 ELSE NULL END) AS sessions_count 
+FROM Sessions s
+WHERE s.user_id IN (SELECT user_id FROM viewer_first)
+GROUP BY 1 
+HAVING COUNT(CASE WHEN session_type = 'Streamer' THEN 1 ELSE NULL END) > 0
+ORDER BY COUNT(CASE WHEN session_type = 'Streamer' THEN 1 ELSE NULL END) DESC, user_id DESC
 ```

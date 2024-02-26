@@ -72,6 +72,7 @@
 - [2480. Form a Chemical Bond](#2480form-a-chemical-bond)
 - [2985. Calculate Compressed Mean](#2985-calculate-compressed-mean)
 - [2987. Find Expensive Cities](#2987-find-expensive-cities)
+- [2990. Loan Types](#2990-loan-types)
 
 ### 175. Combine Two Tables
 https://leetcode.com/problems/combine-two-tables/
@@ -1396,6 +1397,17 @@ FROM
 ) t2
 
 ORDER BY city ASC
+```
 
+### 2990. Loan Types
+https://leetcode.com/problems/loan-types/
 
+```sql
+# Write your MySQL query statement below
+SELECT DISTINCT user_id 
+FROM Loans
+WHERE 
+    user_id IN (SELECT user_id FROM Loans WHERE loan_type = 'Refinance') 
+    AND user_id IN (SELECT user_id FROM Loans WHERE loan_type = 'Mortgage')
+ORDER BY user_id ASC
 ```

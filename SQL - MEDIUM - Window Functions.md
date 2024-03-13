@@ -27,6 +27,7 @@
 - [2854. Rolling Average Steps](#2854-rolling-average-steps)
 - [2984. Find Peak Calling Hours for Each City](#2984-find-peak-calling-hours-for-each-city)
 - [2986. Find Third Transaction](#2986-find-third-transaction)
+- [3055. Top Percentile Fraud](#3055-top-percentile-fraud)
 
 
 ### 177. Nth Highest Salary
@@ -697,4 +698,19 @@ SELECT
 FROM Transactions2
 WHERE rn = 3
 AND spend > prev_spend and spend > prev_spend2
+```
+
+### 3055. Top Percentile Fraud
+https://leetcode.com/problems/top-percentile-fraud/
+
+```sql
+SELECT policy_id, state, fraud_score 
+FROM (
+SELECT 
+    f.*, 
+    percent_rank() OVER(PARTITION BY state ORDER BY fraud_score DESC) as rn
+FROM Fraud f
+) t
+WHERE rn < 0.05
+ORDER BY state ASC, fraud_score DESc, policy_id ASC
 ```

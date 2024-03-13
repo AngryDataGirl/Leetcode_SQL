@@ -73,6 +73,9 @@
 - [2985. Calculate Compressed Mean](#2985-calculate-compressed-mean)
 - [2987. Find Expensive Cities](#2987-find-expensive-cities)
 - [2990. Loan Types](#2990-loan-types)
+- [3051. Find Candidates for Data Scientist Position](#3051-find-candidates-for-data-scientist-position)
+- [3053. Classifying Triangles by Lengths](#3053-classifying-triangles-by-lengths)
+- [3059. Find All Unique Email Domains](#3059-find-all-unique-email-domains)
 
 ### 175. Combine Two Tables
 https://leetcode.com/problems/combine-two-tables/
@@ -1410,4 +1413,53 @@ WHERE
     user_id IN (SELECT user_id FROM Loans WHERE loan_type = 'Refinance') 
     AND user_id IN (SELECT user_id FROM Loans WHERE loan_type = 'Mortgage')
 ORDER BY user_id ASC
+```
+
+### 3051. Find Candidates for Data Scientist Position
+https://leetcode.com/problems/find-candidates-for-data-scientist-position/
+
+```sql
+# Write your MySQL query statement below
+SELECT candidate_id
+FROM 
+(
+SELECT 
+    candidate_id, 
+    SUM(CASE WHEN skill = 'PostgreSQL' THEN 1 ELSE NULL END) as postgre,
+    SUM(CASE WHEN skill = 'Python' THEN 1 ELSE NULL END) as py,
+    SUM(CASE WHEN skill = 'Tableau' THEN 1 ELSE NULL END) as tab
+FROM Candidates 
+GROUP BY candidate_id
+) t
+WHERE postgre = 1 and py = 1 and tab = 1 
+ORDER BY candidate_id ASC
+```
+
+### 3053. Classifying Triangles by Lengths
+https://leetcode.com/problems/classifying-triangles-by-lengths/
+
+```sql
+SELECT 
+    # check if it's a triangle first'
+    CASE 
+        WHEN a+b > c AND  a+c > b AND b+c > a THEN
+            CASE 
+                WHEN (A = B) AND (B = C) THEN 'Equilateral'
+                WHEN (A != B) AND (B != C) AND (A != C) THEN 'Scalene'
+                ELSE 'Isosceles' END
+            ELSE 'Not A Triangle' 
+        END AS triangle_type
+FROM Triangles
+```
+
+### 3059. Find All Unique Email Domains
+https://leetcode.com/problems/find-all-unique-email-domains/
+
+```sql
+SELECT  
+    substring_index(email, '@', -1) as email_domain, count( substring_index(email, '@', -1) ) as count
+FROM Emails
+WHERE email LIKE '%.com'
+GROUP BY  1
+ORDER BY  1 ASC
 ```

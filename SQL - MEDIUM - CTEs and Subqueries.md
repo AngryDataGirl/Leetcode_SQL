@@ -25,6 +25,8 @@
 - [2292. Products With Three or More Orders in Two Consecutive Years](#2292products-with-three-or-more-orders-in-two-consecutive-years)
 - [2388. Change Null Values in a Table to the Previous Value](#2388change-null-values-in-a-table-to-the-previous-value)
 - [2394. Employees With Deductions](#2394employees-with-deductions)
+- [3050. Pizza Toppings Cost Analysis](#3050-pizza-toppings-cost-analysis)
+- [3052. Maximize Items](#3052-maximize-items)
 
 ### 570. Managers with at Least 5 Direct Reports
 https://leetcode.com/problems/managers-with-at-least-5-direct-reports/
@@ -785,4 +787,62 @@ HAVING total_hour < needed_hours
 
 SELECT employee_id
 FROM cte3
+```
+
+### 3050. Pizza Toppings Cost Analysis
+https://leetcode.com/problems/pizza-toppings-cost-analysis/
+
+```sql
+WITH pizzas AS 
+(
+SELECT 
+    t1.topping_name t1, 
+    t2.topping_name t2,  
+    t3.topping_name t3,     
+    ROUND((t1.cost + t2.cost + t3.cost),2) as total_cost
+FROM Toppings t1, Toppings t2, Toppings t3
+WHERE 
+    t1.topping_name < t2.topping_name AND t2.topping_name < t3.topping_name
+)
+
+SELECT DISTINCT
+CONCAT(t1,',',t2,',',t3) as pizza, total_cost
+FROM pizzas
+GROUP BY 1
+ORDER BY 2 DESC, 1 ASC
+```
+
+### 3052. Maximize Items
+https://leetcode.com/problems/maximize-items/
+
+```sql
+WITH prime AS 
+(
+SELECT 
+    i.item_type,
+    sum(square_footage) as sqft,
+    count(item_id) as items
+FROM Inventory i
+WHERE item_type = "prime_eligible"
+)
+,
+not_prime AS 
+(
+SELECT 
+    i.item_type,
+    sum(square_footage) as sqft,
+    count(item_id) as items
+FROM Inventory i
+WHERE item_type = "not_prime"
+)
+
+SELECT 
+    "prime_eligible" as item_type,
+    floor(500000/prime.sqft) * prime.items as item_count
+FROM prime
+UNION
+SELECT 
+    "not_prime" as item_type,
+    floor((500000- (floor(500000/prime.sqft) * prime.sqft)) / not_prime.sqft) * not_prime.items
+FROM prime, not_prime
 ```

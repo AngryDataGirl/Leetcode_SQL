@@ -3,6 +3,8 @@
 - [1098. Unpopular Books](#1098unpopular-books)
 - [1393. Capital Gain/Loss](#1393-capital-gainloss)
 - [2072. The Winner University](#2072the-winner-university)
+- [3054. Binary Tree Nodes](#3054-binary-tree-nodes)
+- [3056. Snaps Analysis](#3056-snaps-analysis)
 
 
 ### 1193. Monthly Transactions I
@@ -147,4 +149,41 @@ SELECT
         WHEN ca.win > ny.win THEN 'California University' 
         ELSE 'No Winner' END AS winner
 FROM NYwin ny, CALIwin ca
+```
+### 3054. Binary Tree Nodes
+https://leetcode.com/problems/binary-tree-nodes/
+
+```sql
+SELECT 
+    N, 
+    CASE WHEN P IS NULL THEN 'Root'
+        WHEN N IN (SELECT P From Tree) THEN 'Inner'
+    ELSE 'Leaf' 
+    END AS Type 
+FROM Tree
+ORDER BY N ASC
+```
+
+### 3056. Snaps Analysis
+https://leetcode.com/problems/snaps-analysis/
+
+```sql
+SELECT 
+    age_bucket, 
+    IFNULL(ROUND((send/total_time)*100,2),0) as send_perc,
+    IFNULL(ROUND((open/total_time)*100,2),0) as open_perc
+FROM
+(
+SELECT 
+    age_bucket,
+    sum(case when activity_type = 'open' THEN time_spent ELSE NULL END) as open,
+    sum(case when activity_type = 'send' THEN time_spent ELSE NULL END) as send,
+    sum(time_spent) as total_time
+FROM Activities ac
+LEFT JOIN Age ag
+    ON ag.user_id = ac.user_id
+GROUP BY age_bucket
+) t
+
+GROUP BY age_bucket
 ```

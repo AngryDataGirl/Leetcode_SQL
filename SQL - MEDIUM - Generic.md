@@ -17,6 +17,7 @@
 - [2298. Tasks Count in the Weekend](#2298tasks-count-in-the-weekend)
 - [2372. Calculate the Influence of Each Salesperson](#2372calculate-the-influence-of-each-salesperson)
 - [2893. Calculate Orders Within Each Interval](#2893-calculate-orders-within-each-interval)
+- [3087. Find Trending Hashtags](#3087-find-trending-hashtags)
 
 
 ### 612. Shortest Distance in a Plane
@@ -374,4 +375,23 @@ SELECT
 FROM Orders
 GROUP BY 1
 ORDER BY 1 
+```
+
+### 3087. Find Trending Hashtags
+https://leetcode.com/problems/find-trending-hashtags/
+
+```SQL
+SELECT 
+    CONCAT('#',hashtag) as HASHTAG, 
+    count(tweet_id) as HASHTAG_COUNT
+FROM
+    (
+    SELECT 
+        tweet_id,
+        SUBSTRING_INDEX(SUBSTRING_INDEX(tweet, '#', -1), ' ', 1) AS hashtag
+    FROM Tweets
+    ) t
+GROUP BY hashtag
+ORDER BY HASHTAG_COUNT DESC, HASHTAG DESC
+LIMIT 3
 ```

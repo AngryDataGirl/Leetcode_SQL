@@ -973,3 +973,26 @@ GROUP BY 1
 HAVING COUNT(CASE WHEN session_type = 'Streamer' THEN 1 ELSE NULL END) > 0
 ORDER BY COUNT(CASE WHEN session_type = 'Streamer' THEN 1 ELSE NULL END) DESC, user_id DESC
 ```
+
+### 3061. Calculate Trapping Rain Water
+https://leetcode.com/problems/calculate-trapping-rain-water/
+
+```sql
+# Write your MySQL query statement below
+with cte as (
+    select id, height,
+    max(height) over (order by id asc) as from_left_max,
+    max(height) over (order by id desc) as from_right_max
+    from heights
+    order by id
+)
+
+SELECT sum(trapped_water) as total_trapped_water
+FROM(
+SELECT 
+    cte.*, 
+    least(from_left_max, from_right_max) as lowest_side, 
+    least(from_left_max, from_right_max) - height as trapped_water
+FROM cte
+) t
+```
